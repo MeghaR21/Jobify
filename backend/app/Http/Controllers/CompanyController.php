@@ -29,7 +29,8 @@ class CompanyController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'nullable|string|email|unique:companies,email|max:255|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'address' => 'required|string|max:255',
-                'website' => 'nullable|regex:/^(http|https):\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/?$|^www\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/?$/|unique:companies,website|max:255',
+                'website' => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/|unique:companies,website|max:255',
+
                 
             ]);
             $company = Company::create([
@@ -56,7 +57,7 @@ class CompanyController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'nullable|string|email|max:255|unique:companies,email,'.$id.'|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'address' => 'required|string|max:255',
-                'website' => 'nullable|regex:/^(http|https):\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/?$|^www\.[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\/?$/|unique:companies,website,'.$id.'|max:255',
+                'website' => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/|unique:companies,website,'.$id.'|max:255',
             ]);
 
             $company = Company::findOrFail($id);
