@@ -1,0 +1,49 @@
+/* App.css */
+.bg-orange {
+  background-color: #ff6700;
+}
+
+:root {
+  --bs-primary: #ff4d00; /* Bright Orange */
+  --bs-secondary: #ff6700; /* Medium Orange */
+  --bs-success: #ff8d00; /* Lighter Orange */
+  --bs-warning: #ff9a00; /* Soft Orange */
+}
+
+.btn-orange {
+  background-color: #ff4d00;
+  border-color: #ff4d00;
+  color: white;
+}
+
+.btn-orange:hover {
+  background-color: #ff8d00;
+  border-color: #ff8d00;
+}
+
+footer {
+  background-color: #ff4d00;
+}
+
+.text-orange {
+  color: #ff6700;
+}
+
+.full-description {
+  margin-top: 10px;
+  border-top: 1px solid #ff6700;
+  padding-top: 10px;
+}
+.btn-pastel-orange {
+  background-color: #FFB347;
+  border-color: #FFB347;
+  color: #333; /* Dark text for contrast */
+}
+
+.btn-pastel-orange:hover,
+.btn-pastel-orange:focus,
+.btn-pastel-orange:active {
+  background-color: #FFA500;
+  border-color: #FFA500;
+  color: #333;
+}
