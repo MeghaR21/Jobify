@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import JobAdvert from './components/JobsAds';
 import AdminDashboard from './components/AdminDashboard';
-import LoginPage from './components/login'; // Assuming your login file is named LoginPage.js
+import LoginPage from './components/login'; 
 
 function App() {
   const [jobAds, setJobAds] = useState([]);

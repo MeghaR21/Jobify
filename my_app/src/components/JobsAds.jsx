@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 
-
 function JobAdvert({ 
   title, 
   companyName, 
   place,
   contractType,
-  salarys, 
+  salary, // Fixed typo here
   description, 
   fullDescription, 
   creationDate 
@@ -28,13 +27,11 @@ function JobAdvert({
     setIsApplying(true);
   };
 
-  // Close the application form
   const handleCloseForm = () => {
     setIsApplying(false);
     setFormData({ name: '', email: '', phone: '', message: '' }); // Reset form
   };
 
-  // Handle form changes
   const handleFormChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -43,11 +40,17 @@ function JobAdvert({
     }));
   };
 
-  // Handle form submission
   const handleFormSubmit = (e) => {
     e.preventDefault();
-  // Post form data to backend
-  fetch('/api/apply', {
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(formData.email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    fetch('/api/apply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,36 +61,33 @@ function JobAdvert({
         companyName: companyName,
       }),
     })
-    .then(response => response.json())
-    .then(data => {
-      alert('Application submitted successfully!');
-      setIsApplying(false);  // Close form after submission
-      setFormData({ name: '', email: '', phone: '', message: '' });  // Reset form
-    })
-    .catch(error => {
-      console.error('Error submitting application:', error);
-    });
+      .then(response => response.json())
+      .then(data => {
+        alert('Application submitted successfully!');
+        handleCloseForm(); // Reset and close form after submission
+      })
+      .catch(error => {
+        console.error('Error submitting application:', error);
+      });
   };
 
   return (
     <div className="card h-100 shadow-sm">
       <div className="card-body">
         <h2 className="card-title">{title}</h2>
-        <p><strong></strong> {companyName}</p>
-        <p><strong></strong> {place}</p>
-        <p><strong></strong> {contractType}</p>
-        <p><strong></strong> {salarys}</p>
+        <p><strong>Company:</strong> {companyName}</p>
+        <p><strong>Location:</strong> {place}</p>
+        <p><strong>Contract Type:</strong> {contractType}</p>
+        <p><strong>Salary:</strong> {salary}</p>
         <p><strong>Description:</strong> {description}</p>
 
-        {/* Learn More section */}
         {isExpanded && (
           <div className="full-description">
-            <p><strong></strong> {fullDescription}</p>
-            <p><strong></strong> {creationDate}</p>
+            <p>{fullDescription}</p>
+            <p><strong>Date Posted:</strong> {creationDate}</p>
           </div>
         )}
 
-        {/* Buttons for Learn More and Apply */}
         <button className="btn btn-learn-more btn-pastel-orange me-3" onClick={handleToggle}>
           {isExpanded ? 'Show Less' : 'Learn More'}
         </button>
@@ -95,7 +95,6 @@ function JobAdvert({
           Apply
         </button>
 
-        {/* Application Form (Appears after clicking Apply) */}
         {isApplying && (
           <form onSubmit={handleFormSubmit} className="mt-3">
             <h4 className="mb-3">Apply for {title}</h4>
@@ -139,13 +138,12 @@ function JobAdvert({
                 name="message"
                 value={formData.message}
                 onChange={handleFormChange}
-                required
               />
             </div>
             <button type="submit" className="btn btn-warning text-dark me-2">
               Submit
             </button>
-             <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
+            <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
               Close
             </button>
           </form>
