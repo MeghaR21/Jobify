@@ -1,0 +1,27 @@
+:root {
+    --bs-primary: #ff4d00; /* Bright Orange */
+    --bs-secondary: #ff6700; /* Medium Orange */
+    --bs-success: #ff8d00; /* Lighter Orange */
+    --bs-warning: #ff9a00; /* Soft Orange */
+  }
+  
+  .btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+  
+  .btn-secondary {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+  }
+  
+  .btn-success {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+  }
+  
+  .btn-warning {
+    background-color: var(--bs-warning);
+    border-color: var(--bs-warning);
+  }
+  
