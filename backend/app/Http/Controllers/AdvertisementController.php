@@ -11,7 +11,7 @@ use Exception;
 class AdvertisementController extends Controller
 {
 
-    //get all the informations
+    //get all the informations ahahahhaaahaha
     public function index()
     {
         try {
