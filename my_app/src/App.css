@@ -10,15 +10,19 @@
   --bs-warning: #ff9a00; /* Soft Orange */
 }
 
-.btn-orange {
-  background-color: #ff4d00;
-  border-color: #ff4d00;
+/* Define a pale orange button style */
+.btn-pale-orange {
+  background-color: #F5B895; /* Pale orange color */
   color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.btn-orange:hover {
-  background-color: #ff8d00;
-  border-color: #ff8d00;
+.btn-pale-orange:hover {
+  background-color: #e89b78; /* Slightly darker orange on hover */
 }
 
 footer {
@@ -40,10 +44,16 @@ footer {
   color: #333; /* Dark text for contrast */
 }
 
-.btn-pastel-orange:hover,
-.btn-pastel-orange:focus,
-.btn-pastel-orange:active {
-  background-color: #FFA500;
-  border-color: #FFA500;
-  color: #333;
+/* Add this to your App.css */
+.App.dark {
+  background-color: #343a40; /* Dark background */
+  color: white; /* Light text color */
+}
+
+.App.dark .bg-orange {
+  background-color: #ff9800; /* Example for a different color in dark mode */
+}
+
+.App.dark .btn {
+  background-color: #6c757d; /* Dark button color */
 }

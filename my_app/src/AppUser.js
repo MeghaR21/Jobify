@@ -3,10 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './components/MyAxios';
-import JobAdvert from './components/JobAdvert';
+import JobAdvert from './components/JobAdvertUser';
 import AdminDashboard from './components/AdminDashboard';
 import LoginPage from './components/LoginPage';
-import Suggestions from './components/Suggestions'; // Import the Suggestions component
 
 function App() {
   const [jobAds, setJobAds] = useState([]);
@@ -19,9 +18,6 @@ function App() {
     salary: '',
     date: '',
   });
-  
-  const [theme, setTheme] = useState('light'); // Light/Dark mode state
-  const [language, setLanguage] = useState('EN'); // Language state
 
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
@@ -47,16 +43,6 @@ function App() {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
-  };
-
-  // Toggle theme between light and dark
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
-  // Toggle language between English and French
-  const toggleLanguage = () => {
-    setLanguage(prevLanguage => (prevLanguage === 'EN' ? 'FR' : 'EN'));
   };
 
   // Filtered and searched job ads
@@ -104,11 +90,11 @@ function App() {
               <>
                 {/* Job Board Header */}
                 <header className="bg-orange text-white text-center py-5">
-                  <h1>{language === 'EN' ? 'Jobify' : 'Jobify'}</h1>
-                  <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochain succès professionnel!'}</p>
+                <h1>{language === 'EN' ? 'Jobify' : 'Jobify'}</h1>
+                <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochain succès professionnel!'}</p>
                   {/* Login Button */}
-                  <Link to="/login">
-                    <button className="btn btn-pale-orange">{language === 'EN' ? 'Login / Sign In' : 'Connexion / Inscription'}</button>
+                  <Link to="/profile">
+                    <button className="btn btn-pale-orange">Profile</button>
                   </Link>
                   <Link to="/suggestions" className="ms-3">
                     <button className="btn btn-secondary">{language === 'EN' ? 'Suggestions/Ideas' : 'Suggestions / Idées'}</button>
@@ -237,3 +223,4 @@ function App() {
 }
 
 export default App;
+
