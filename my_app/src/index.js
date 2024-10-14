@@ -4,6 +4,11 @@ import App from './App';
 import './index.css';  // Your custom CSS
 import 'bootstrap/dist/css/bootstrap.css';  // Bootstrap CSS
 import reportWebVitals from './reportWebVitals';  // Web vitals for performance metrics
+import axios from 'axios'
+
+const instance = axios.create({
+  baseURL: process.env.REACT_APP_API_ROUTE
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

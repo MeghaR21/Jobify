@@ -1,23 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import JobAdvert from './components/JobsAds';
+import JobAdvert from './components/JobAdvert';
 import AdminDashboard from './components/AdminDashboard';
-import LoginPage from './components/login'; 
+import LoginPage from './components/LoginPage'; 
 
 function App() {
   const [jobAds, setJobAds] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false); // Track admin status
 
   // Fetch job ads from the Laravel API when the component mounts
-  useEffect(() => {
+   useEffect(() => {
     fetchJobAds();
-  }, []);
+   }, []);
 
   const fetchJobAds = () => {
-    axios.get(process.env.REACT_APP_API_JOB_ADS_INDEX) // Use env variable
+    axios.get("http://localhost:8000/api/advertisements_list") // Use env variable
       .then(response => {
         setJobAds(response.data); // Store fetched job ads in state
       })
@@ -28,7 +28,7 @@ function App() {
 
   // Handle admin login
   const handleLogin = (email, password) => {
-    axios.post(process.env.REACT_APP_API_LOGIN, { email, password }) // Use env variable
+    axios.post('http://localhost:8000/api/login', { email, password }) // Use env variable
       .then(response => {
         localStorage.setItem('token', response.data.token);  // Store token
         setIsAdmin(true);  // Set admin status to true
@@ -38,20 +38,9 @@ function App() {
       });
   };
 
-  // Handle user registration
-  const registerUser = (userData) => {
-    axios.post(process.env.REACT_APP_API_REGISTER, userData) // Use env variable
-      .then(response => {
-        console.log('User registered:', response.data);
-      })
-      .catch(error => {
-        console.error('Error registering user:', error);
-      });
-  };
-
   // Fetch records for admin dashboard
   const fetchAdminDashboardData = () => {
-    axios.get(process.env.REACT_APP_API_ADMIN_DASHBOARD) // Use env variable
+    axios.get('API ADMIN') // Use env variable
       .then(response => {
         console.log('Admin dashboard data:', response.data);
       })
@@ -63,11 +52,10 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Routing Setup */}
         <Routes>
           {/* Admin Dashboard Route */}
           <Route
-            path="/dashboard"
+            path="/AdminDashboard"
             element={isAdmin ? <AdminDashboard fetchAdminData={fetchAdminDashboardData} /> : <Navigate to="/" />}
           />
 
@@ -78,7 +66,7 @@ function App() {
               <>
                 {/* Job Board Header */}
                 <header className="bg-orange text-white text-center py-5">
-                  <h1>Job Board</h1>
+                  <h1>Jobify</h1>
                   <p>Find the right job for you!</p>
                 </header>
 
@@ -114,7 +102,7 @@ function App() {
           {/* Login Route (Fallback) */}
           <Route
             path="*"
-            element={!isAdmin ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/dashboard" />}
+            element={!isAdmin ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/Admindashboard" />}
           />
         </Routes>
       </div>

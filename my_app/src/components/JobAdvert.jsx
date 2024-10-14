@@ -50,7 +50,7 @@ function JobAdvert({
       return;
     }
 
-    fetch('/api/apply', {
+    fetch('http://localhost:8000/api/advertisements', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
