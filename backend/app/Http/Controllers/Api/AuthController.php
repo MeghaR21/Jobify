@@ -15,13 +15,17 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone'=>'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone' => $request->phone,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -54,7 +58,8 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user'=>$user->makeHidden(['password'])// Add user data (je pourrai enlever ca apres)
+            'user'=>$user->makeHidden(['password']),// Add user data (je pourrai enlever ca apres)
+            // 'role' => $user->role, // Ajoute le rôle de l'utilisateur à la réponse
         ]);
     }
 

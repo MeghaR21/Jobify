@@ -15,7 +15,7 @@ class AdvertisementController extends Controller
     public function index()
     {
         try {
-            $advertisements = Advertisement::all();
+            $advertisements = Advertisement::with('company')->get(); // renvoie aussi les informations de l'entrprises associée
             return response()->json($advertisements, 200);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to fetch advertisements'], 500);
@@ -32,20 +32,22 @@ class AdvertisementController extends Controller
                 'location' => 'required|string',
                 'salary' => 'nullable|numeric',
                 'contract_type' => 'nullable|string',
+                'full_description' => 'required|string',
                 'description' => 'required|string',
                 'company_id' => 'required|exists:companies,id',
-                'user_id'=>'required|exists:users,id',
+                'user_id'=>'nullable|exists:users,id',
             ]);
 
             // Création de l'annonce
             $advertisement = Advertisement::create([
                 'job_title' => $validatedData['job_title'],
                 'description' => $validatedData['description'],
-                'company_id' => $validatedData['company_id'],
+                'full_description' => $validatedData['full_description'],
                 'location' => $validatedData['location'],
                 'contract_type' => $validatedData['contract_type'],
                 'salary' => $validatedData['salary'],
                 'user_id' => $validatedData['user_id'],
+                'company_id' => $validatedData['company_id'],
             ]);
 
             return response()->json(['message' => 'Advertisement created succesfully !', 'data' => $advertisement], 201);

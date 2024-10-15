@@ -46,7 +46,9 @@ class UserController extends Controller
         try {
             // Validation of request data
             $validatedData = $request->validate([
-                'name' => 'sometimes|string|max:255',
+                'first_name' => 'sometimes|string|max:255',
+                'last_name' =>  'sometimes|string|max:255',
+                'phone' => 'sometimes|string|max:13',
                 'email' => 'sometimes|string|email|max:255|unique:users,email,'.$id.'|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'password' => 'sometimes|string|min:8', // Optional password validation
             ]);
