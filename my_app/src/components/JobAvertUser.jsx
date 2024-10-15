@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import axios from 'axios'; 
-import { instance } from './MyAxios';
+import React, { useState, useEffect } from 'react';
 
 function JobAdvert({ 
   title, 
   companyName, 
   place,
   contractType,
-  salary, // Fixed typo here
+  salary, 
   description, 
   fullDescription, 
-  creationDate 
+  creationDate,
+  userInfo // Assume this prop contains user information
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
@@ -20,6 +19,18 @@ function JobAdvert({
     phone: '',
     message: ''
   });
+
+  useEffect(() => {
+    // Pre-fill form data with user information if available
+    if (userInfo) {
+      setFormData({
+        name: userInfo.name || '',
+        email: userInfo.email || '',
+        phone: userInfo.phone || '',
+        message: ''
+      });
+    }
+  }, [userInfo]);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -52,7 +63,7 @@ function JobAdvert({
       return;
     }
 
-    instance('/applications_create', {
+    fetch('/api/apply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -82,10 +93,10 @@ function JobAdvert({
         {isExpanded && (
           <div className="full-description">
             <p>{fullDescription}</p>
-            <p><strong></strong> {companyName}</p>
-            <p><strong></strong> {place}</p>
-            <p><strong></strong> {contractType}</p>
-            <p><strong></strong> {salary}</p>
+            <p><strong>Company:</strong> {companyName}</p>
+            <p><strong>Location:</strong> {place}</p>
+            <p><strong>Contract Type:</strong> {contractType}</p>
+            <p><strong>Salary:</strong> {salary}</p>
             <p><strong>Date Posted:</strong> {creationDate}</p>
           </div>
         )}
@@ -143,7 +154,7 @@ function JobAdvert({
               />
             </div>
             <button type="submit" className="btn btn-warning text-dark me-2">
-              Submit
+              Apply
             </button>
             <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
               Close
