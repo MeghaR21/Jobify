@@ -107,8 +107,7 @@ function App() {
 
         <Routes>
           {/* Admin Dashboard Route */}
-          <Route
-             path="/" element={<LoginPage />} />
+          {/* <Route path="/" element={<LoginPage />} /> */}
              <Route path="/AdminDashboard" element={<AdminDashboard />} />
              <Route path="/Recruiter"element={<JobAdForm />}  />
              {/* Add more routes as needed */}
@@ -215,8 +214,15 @@ function App() {
                 </div>
 
                 {/* Footer */}
-                <footer className={`text-center py-3 ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
-                  <p>&copy; 2024 Job Board. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>
+                <footer className={`d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
+                  <div>
+                    <p>&copy; {new Date().getFullYear()} Jobify. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>
+                  </div>
+                  <div>
+                    <a href="/privacy-policy" className="text-decoration-none text-reset">{language === 'EN' ? 'Privacy Policy' : 'Politique de confidentialité'}</a>
+                    <span className="mx-2">|</span>
+                    <a href="/terms-of-service" className="text-decoration-none text-reset">{language === 'EN' ? 'Terms of Service' : 'Conditions d\'utilisation'}</a>
+                  </div>
                 </footer>
               </>
             }
@@ -224,7 +230,7 @@ function App() {
 
           {/* Login Route */}
           <Route
-            path="*"
+            path="/login"
             element={!isAdmin ? <LoginPage /> : <Navigate to="/AdminDashboard" />}
           />
 
