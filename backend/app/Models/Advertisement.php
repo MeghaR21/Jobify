@@ -16,6 +16,7 @@ class Advertisement extends Model
         'salary',
         'contract_type',
         'description',
+        'full_description',
         'company_id',  // Si vous avez un champ pour la relation avec la table companies
         'user_id',
     ];

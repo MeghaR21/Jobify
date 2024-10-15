@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('applications', function (Blueprint $table) {
             $table->id();
-            $table->boolean('email_sent')->default(false);  // Indique si un email a été envoyé
+            $table->text('message'); // message recupere lors de la connexion
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');  // Référence à la personne qui postule
             $table->foreignId('advertisement_id')->constrained('advertisements')->onDelete('cascade');  // Référence à l'annonce d'emploi
             $table->timestamps();
