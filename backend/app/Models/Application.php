@@ -13,7 +13,7 @@ class Application extends Model
     protected $fillable = [
         'advertisement_id',      // ID du poste pour lequel la candidature est faite
         'user_id',   // ID de la personne qui postule
-        'email_sent',
+        'message',
         // Ajoutez d'autres champs si nécessaire
     ];
 

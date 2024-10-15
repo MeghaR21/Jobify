@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('salary', 8, 2)->nullable();  // Salaire
             $table->string('contract_type')->nullable(); // Type de contrat (optionnel)
             $table->text('description');  // Description
+            $table->longText('full_description');  // Description
             $table->foreignId('company_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
