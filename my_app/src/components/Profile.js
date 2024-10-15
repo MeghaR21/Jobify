@@ -41,28 +41,16 @@ function Profile() {
     if (isEditing) {
       // Update user information
       instance
-        .put('/USER_UPDATE', payload, {
+        .put('/users_update/{id}', payload, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         .then(() => alert('Account updated successfully'))
         .catch((error) => console.error('Error updating account:', error));
-    } else {
-      // Register new user
-      instance
-        .post('/register', { ...payload, password_confirmation: passwordConfirm })
-        .then(() => alert('Account created successfully'))
-        .catch((error) => console.error('Error creating account:', error));
     }
   };
 
   return (
     <>
-      {/* Job Board Header */}
-      <header className="bg-orange text-white text-center py-5">
-        <h1>Jobify</h1>
-        <p>"Find your next career hit!"</p>
-      </header>
-
       <Container>
         <h2 className="mt-4">Profile</h2>
         <h4>{isEditing ? 'Modify Account' : 'Register'}</h4>
