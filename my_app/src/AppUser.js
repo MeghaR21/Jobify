@@ -6,6 +6,7 @@ import { instance } from './components/MyAxios';
 import JobAdvert from './components/JobAdvertUser';
 import AdminDashboard from './components/AdminDashboard';
 import LoginPage from './components/LoginPage';
+import Suggestions from './components/Suggestions';
 
 function App() {
   const [jobAds, setJobAds] = useState([]);
@@ -19,13 +20,26 @@ function App() {
     date: '',
   });
 
+  const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState('EN'); // Default language
+
+  // Toggle Light/Dark Theme
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
+  // Toggle Language
+  const toggleLanguage = () => {
+    setLanguage((prevLang) => (prevLang === 'EN' ? 'FR' : 'EN'));
+  };
+
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
     fetchJobAds();
   }, []);
 
   const fetchJobAds = () => {
-    instance.get("/advertisements_list") // Use env variable
+    instance.get("/advertisements_list")
       .then(response => {
         setJobAds(response.data); // Store fetched job ads in state
       })
@@ -59,22 +73,48 @@ function App() {
 
   return (
     <Router>
-      <div className={`App ${theme}`}>
-        {/* Toggle for Light/Dark Mode */}
-        <div className="toggle-theme">
-          <label>
-            <input type="checkbox" onChange={toggleTheme} />
-            {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-          </label>
-        </div>
+      <div className={`App ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
+        {/* Header */}
+        <header className="d-flex justify-content-between align-items-center p-3">
+          <div>
+            <h1>Jobify</h1>
+            <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochaine carrière!'}</p>
+          </div>
 
-        {/* Toggle for Language Switch */}
-        <div className="toggle-language">
-          <label>
-            <input type="checkbox" onChange={toggleLanguage} />
-            {language === 'EN' ? 'Switch to Français' : 'Switch to English'}
-          </label>
-        </div>
+          {/* Dark/Light and Language Switches */}
+          <div className="d-flex align-items-center">
+            {/* Dark/Light Switch */}
+            <div className="form-check form-switch me-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="darkModeSwitch"
+                checked={darkMode}
+                onChange={toggleDarkMode}
+              />
+              <label className="form-check-label" htmlFor="darkModeSwitch">
+                {darkMode ? 'Dark' : 'Light'}
+              </label>
+            </div>
+
+            {/* Language Switch */}
+            <button className="btn btn-outline-primary me-3" onClick={toggleLanguage}>
+              {language === 'EN' ? 'FR' : 'EN'}
+            </button>
+
+            {/* Profile Button */}
+            <Link to="/profile">
+              <button className="btn btn-pale-orange">Profile</button>
+            </Link>
+
+            {/* Suggestions Button */}
+            <Link to="/suggestions" className="ms-3">
+              <button className="btn btn-secondary">
+                {language === 'EN' ? 'Suggestions / Ideas' : 'Suggestions / Idées'}
+              </button>
+            </Link>
+          </div>
+        </header>
 
         <Routes>
           {/* Admin Dashboard Route */}
@@ -88,19 +128,6 @@ function App() {
             path="/"
             element={
               <>
-                {/* Job Board Header */}
-                <header className="bg-orange text-white text-center py-5">
-                <h1>{language === 'EN' ? 'Jobify' : 'Jobify'}</h1>
-                <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochain succès professionnel!'}</p>
-                  {/* Login Button */}
-                  <Link to="/profile">
-                    <button className="btn btn-pale-orange">Profile</button>
-                  </Link>
-                  <Link to="/suggestions" className="ms-3">
-                    <button className="btn btn-secondary">{language === 'EN' ? 'Suggestions/Ideas' : 'Suggestions / Idées'}</button>
-                  </Link>
-                </header>
-
                 {/* Search Bar and Filters */}
                 <div className="container my-4">
                   <div className="row">
@@ -173,7 +200,6 @@ function App() {
                 {/* Job Ads Listing */}
                 <div className="container my-5">
                   <div className="row">
-                    {/* Map through the filtered and searched job ads and render JobAdvert components */}
                     {filteredJobAds.length > 0 ? (
                       filteredJobAds.map((ad) => (
                         <div key={ad.id} className="col-md-4 mb-4">
@@ -191,7 +217,7 @@ function App() {
                       ))
                     ) : (
                       <div className="text-center">
-                        <p>{language === 'EN' ? 'No job ads match your search or filters.' : 'Aucune annonce d\'emploi ne correspond à votre recherche ou à vos filtres.'}</p>
+                        <p>{language === 'EN' ? 'No job ads match your search or filters.' : 'Aucune annonce ne correspond à vos critères.'}</p>
                       </div>
                     )}
                   </div>
@@ -199,7 +225,7 @@ function App() {
 
                 {/* Footer */}
                 <footer className="bg-dark text-white text-center py-3">
-                  <p>&copy; 2024 Job Board. All rights reserved.</p>
+                  <p>&copy; 2024 Job Board. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>
                 </footer>
               </>
             }
@@ -223,4 +249,3 @@ function App() {
 }
 
 export default App;
-

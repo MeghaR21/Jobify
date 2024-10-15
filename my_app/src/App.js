@@ -6,7 +6,8 @@ import { instance } from './components/MyAxios';
 import JobAdvert from './components/JobAdvert';
 import AdminDashboard from './components/AdminDashboard';
 import LoginPage from './components/LoginPage';
-import Suggestions from './components/Suggestions'; // Import the Suggestions component
+import Suggestions from './components/Suggestions';
+import Recruiter from './components/Recruiter';
 
 function App() {
   const [jobAds, setJobAds] = useState([]);
@@ -19,9 +20,19 @@ function App() {
     salary: '',
     date: '',
   });
-  
-  const [theme, setTheme] = useState('light'); // Light/Dark mode state
-  const [language, setLanguage] = useState('EN'); // Language state
+
+  const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState('EN'); // Default language
+
+  // Handle Dark/Light Theme Switch
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
+  // Handle Language Switch
+  const toggleLanguage = () => {
+    setLanguage((prevLang) => (prevLang === 'EN' ? 'FR' : 'EN'));
+  };
 
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
@@ -49,16 +60,6 @@ function App() {
     setFilters({ ...filters, [name]: value });
   };
 
-  // Toggle theme between light and dark
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
-  // Toggle language between English and French
-  const toggleLanguage = () => {
-    setLanguage(prevLanguage => (prevLanguage === 'EN' ? 'FR' : 'EN'));
-  };
-
   // Filtered and searched job ads
   const filteredJobAds = jobAds.filter(ad => {
     const matchesSearchTerm = ad.description.toLowerCase().includes(searchTerm);
@@ -73,55 +74,57 @@ function App() {
 
   return (
     <Router>
-      <div className={`App ${theme}`}>
-        {/* Toggle for Light/Dark Mode */}
-        <div className="toggle-theme">
-          <label>
-            <input type="checkbox" onChange={toggleTheme} />
-            {theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-          </label>
-        </div>
+      <div className={`App ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
+        {/* Header */}
+        <header className={`d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
+          <div>
+            <h1>Jobify</h1>
+            <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochaine carrière!'}</p>
+          </div>
 
-        {/* Toggle for Language Switch */}
-        <div className="toggle-language">
-          <label>
-            <input type="checkbox" onChange={toggleLanguage} />
-            {language === 'EN' ? 'Switch to Français' : 'Switch to English'}
-          </label>
-        </div>
+          {/* Dark/Light and Language Switches */}
+          <div className="d-flex align-items-center">
+            {/* Dark/Light Switch */}
+            <div className="form-check form-switch me-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="darkModeSwitch"
+                checked={darkMode}
+                onChange={toggleDarkMode}
+              />
+              <label className="form-check-label" htmlFor="darkModeSwitch">
+                {darkMode ? 'Dark' : 'Light'}
+              </label>
+            </div>
+
+            {/* Language Switch */}
+            <button className="btn btn-outline-primary me-3" onClick={toggleLanguage}>
+              {language === 'EN' ? 'FR' : 'EN'}
+            </button>
+          </div>
+        </header>
 
         <Routes>
           {/* Admin Dashboard Route */}
           <Route
-            path="/AdminDashboard"
-            element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
-          />
+             path="/" element={<LoginPage />} />
+             <Route path="/AdminDashboard" element={<AdminDashboard />} />
+             <Route path="/Recruiter"element={<JobAdForm />}  />
+             {/* Add more routes as needed */}
 
           {/* Job Board Route */}
           <Route
             path="/"
             element={
               <>
-                {/* Job Board Header */}
-                <header className="bg-orange text-white text-center py-5">
-                  <h1>{language === 'EN' ? 'Jobify' : 'Jobify'}</h1>
-                  <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochain succès professionnel!'}</p>
-                  {/* Login Button */}
-                  <Link to="/login">
-                    <button className="btn btn-pale-orange">{language === 'EN' ? 'Login / Sign In' : 'Connexion / Inscription'}</button>
-                  </Link>
-                  <Link to="/suggestions" className="ms-3">
-                    <button className="btn btn-secondary">{language === 'EN' ? 'Suggestions/Ideas' : 'Suggestions / Idées'}</button>
-                  </Link>
-                </header>
-
                 {/* Search Bar and Filters */}
                 <div className="container my-4">
                   <div className="row">
                     <div className="col-md-4">
                       <input
                         type="text"
-                        placeholder={language === 'EN' ? 'Search in job description...' : 'Rechercher dans la description de l\'emploi...'}
+                        placeholder={language === 'EN' ? 'Search in job description...' : 'Recherchez dans la description...'}
                         className="form-control"
                         value={searchTerm}
                         onChange={handleSearchChange}
@@ -192,43 +195,43 @@ function App() {
                       filteredJobAds.map((ad) => (
                         <div key={ad.id} className="col-md-4 mb-4">
                           <JobAdvert
-                            title={ad.title}
-                            companyName={ad.company_name}
-                            place={ad.place}
+                            title={ad.job_title}
+                            companyName={ad.company_id}
+                            place={ad.location}
                             salary={ad.salary}
                             contractType={ad.contract_type}
                             description={ad.description}
                             fullDescription={ad.full_description}
-                            creationDate={new Date(ad.creation_date).toLocaleDateString()}
+                            creationDate={new Date(ad.creation_at).toLocaleDateString()}
                           />
                         </div>
                       ))
                     ) : (
                       <div className="text-center">
-                        <p>{language === 'EN' ? 'No job ads match your search or filters.' : 'Aucune annonce d\'emploi ne correspond à votre recherche ou à vos filtres.'}</p>
+                        <p>{language === 'EN' ? 'No job ads match your search or filters.' : "Aucune annonce d'emploi ne correspond à votre recherche ou à vos filtres."}</p>
                       </div>
                     )}
                   </div>
                 </div>
 
                 {/* Footer */}
-                <footer className="bg-dark text-white text-center py-3">
-                  <p>&copy; 2024 Job Board. All rights reserved.</p>
+                <footer className={`text-center py-3 ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
+                  <p>&copy; 2024 Job Board. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>
                 </footer>
               </>
             }
           />
 
-          {/* Suggestions Page */}
-          <Route
-            path="/suggestions"
-            element={<Suggestions />}
-          />
-
           {/* Login Route */}
           <Route
-            path="/login"
+            path="*"
             element={!isAdmin ? <LoginPage /> : <Navigate to="/AdminDashboard" />}
+          />
+
+          {/* Suggestions Route */}
+          <Route
+            path="/suggestions"
+            element={<Suggestions darkMode={darkMode} toggleDarkMode={toggleDarkMode} language={language} toggleLanguage={toggleLanguage} />}
           />
         </Routes>
       </div>

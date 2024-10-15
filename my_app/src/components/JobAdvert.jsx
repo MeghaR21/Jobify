@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from 'axios'; 
+import { instance } from './MyAxios';
 
 function JobAdvert({ 
   title, 
@@ -50,7 +52,7 @@ function JobAdvert({
       return;
     }
 
-    fetch('/api/apply', {
+    instance('/applications_create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,15 +77,15 @@ function JobAdvert({
     <div className="card h-100 shadow-sm">
       <div className="card-body">
         <h2 className="card-title">{title}</h2>
-        <p><strong>Company:</strong> {companyName}</p>
-        <p><strong>Location:</strong> {place}</p>
-        <p><strong>Contract Type:</strong> {contractType}</p>
-        <p><strong>Salary:</strong> {salary}</p>
         <p><strong>Description:</strong> {description}</p>
 
         {isExpanded && (
           <div className="full-description">
             <p>{fullDescription}</p>
+            <p><strong></strong> {companyName}</p>
+            <p><strong></strong> {place}</p>
+            <p><strong></strong> {contractType}</p>
+            <p><strong></strong> {salary}</p>
             <p><strong>Date Posted:</strong> {creationDate}</p>
           </div>
         )}
