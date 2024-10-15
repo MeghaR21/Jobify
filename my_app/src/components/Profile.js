@@ -129,15 +129,14 @@ function Profile() {
           </Form.Group>
 
           <Button type="submit" className="btn btn-primary">
-            {isEditing ? 'Update' : 'Register'}
+            {isEditing ? 'Update' : '/users_update/{id}'}
           </Button>
         </Form>
+          {/* Log Out Button */}
+          <button className="btn btn-danger" onClick={handleLogout}>
+              {language === 'EN' ? 'Log Out' : 'Déconnexion'}
+          </button>
       </Container>
-
-      {/* Footer */}
-      <footer className="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2024 Job Board. All rights reserved.</p>
-      </footer>
     </>
   );
 }

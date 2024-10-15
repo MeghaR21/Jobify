@@ -57,12 +57,6 @@ function Profile() {
 
   return (
     <>
-      {/* Job Board Header */}
-      <header className="bg-orange text-white text-center py-5">
-        <h1>Jobify</h1>
-        <p>"Find your next career hit!"</p>
-      </header>
-
       <Container>
         <h2 className="mt-4">Profile</h2>
         <h4>{isEditing ? 'Modify Account' : 'Register'}</h4>

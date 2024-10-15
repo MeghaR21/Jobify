@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function JobAdvert({ 
+function JobAdvertUser({ 
   title, 
   companyName, 
   place,
@@ -166,4 +166,4 @@ function JobAdvert({
   );
 }
 
-export default JobAdvert;
+export default JobAdvertUser;

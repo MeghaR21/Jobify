@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-ro
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './components/MyAxios';
-import JobAdvert from './components/JobAdvertUser';
+import JobAdvertUser from './components/JobAdvertUser';
 import AdminDashboard from './components/AdminDashboard';
 import LoginPage from './components/LoginPage';
 import Suggestions from './components/Suggestions';
@@ -203,15 +203,15 @@ function App() {
                     {filteredJobAds.length > 0 ? (
                       filteredJobAds.map((ad) => (
                         <div key={ad.id} className="col-md-4 mb-4">
-                          <JobAdvert
-                            title={ad.title}
-                            companyName={ad.company_name}
-                            place={ad.place}
+                          <JobAdvertUser
+                            title={ad.job_title}
+                            companyName={ad.company_id}
+                            place={ad.location}
                             salary={ad.salary}
                             contractType={ad.contract_type}
                             description={ad.description}
                             fullDescription={ad.full_description}
-                            creationDate={new Date(ad.creation_date).toLocaleDateString()}
+                            creationDate={new Date(ad.created_at).toLocaleDateString()}
                           />
                         </div>
                       ))
@@ -222,7 +222,10 @@ function App() {
                     )}
                   </div>
                 </div>
-
+                {/* Log Out Button */}
+                <button className="btn btn-danger" onClick={handleLogout}>
+                  {language === 'EN' ? 'Log Out' : 'Déconnexion'}
+                </button>
                 {/* Footer */}
                 <footer className="bg-dark text-white text-center py-3">
                   <p>&copy; 2024 Job Board. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>

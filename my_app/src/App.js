@@ -11,7 +11,7 @@ import JobAdForm from './components/Recruiter';
 
 function App() {
   const [jobAds, setJobAds] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, ] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // For search engine
   const [filters, setFilters] = useState({
     title: '',
@@ -48,7 +48,7 @@ function App() {
         console.error('Error fetching job ads:', error);
       });
   };
-
+  
   // Handle search input changes
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value.toLowerCase());
@@ -117,6 +117,13 @@ function App() {
             path="/"
             element={
               <>
+              {/* Login Button and Suggestions Button */} 
+              <Link to="/login"> 
+                <button className="btn btn-pale-orange"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
+              </Link> 
+              <Link to="/suggestions" className="ms-3"> 
+                <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions / Ideas' : 'Suggestions / Idées'} </button>
+              </Link>
                 {/* Search Bar and Filters */}
                 <div className="container my-4">
                   <div className="row">
@@ -201,7 +208,7 @@ function App() {
                             contractType={ad.contract_type}
                             description={ad.description}
                             fullDescription={ad.full_description}
-                            creationDate={new Date(ad.creation_at).toLocaleDateString()}
+                            creationDate={new Date(ad.created_at).toLocaleDateString()}
                           />
                         </div>
                       ))
