@@ -92,11 +92,6 @@ class LoginPage extends Component {
 
     return (
       <>
-        {/* Job Board Header */}
-        <header className="bg-orange text-white text-center py-5">
-          <h1>Jobify</h1>
-          <p>Find the right job for you!</p>
-        </header>
 
         <Container className="mt-5">
           <h2>{showSignUp ? 'Sign Up' : 'Login'}</h2>

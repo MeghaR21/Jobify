@@ -7,7 +7,7 @@ import JobAdvert from './components/JobAdvert';
 import AdminDashboard from './components/AdminDashboard';
 import LoginPage from './components/LoginPage';
 import Suggestions from './components/Suggestions';
-import Recruiter from './components/Recruiter';
+import JobAdForm from './components/Recruiter';
 
 function App() {
   const [jobAds, setJobAds] = useState([]);

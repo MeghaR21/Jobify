@@ -130,15 +130,4 @@ const JobAdForm = () => {
   );
 };
 
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/AdminDashboard" element={<AdminDashboard />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
+export default JobAdForm;
