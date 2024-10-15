@@ -30,9 +30,9 @@ class ApplicationController extends Controller
          try {
              // Validation of request data
              $validatedData = $request->validate([
-                 'advertisement_id' => 'required|exists:advertisements,id',
-                 'user_id' => 'nullable|exists:users,id',
-                 'email_sent' => 'boolean'
+                'advertisement_id' => 'required|exists:advertisements,id',
+                'user_id' => 'nullable|exists:users,id',
+                'message' => 'nullable'
  
                  
              ]);
@@ -65,9 +65,10 @@ class ApplicationController extends Controller
          try {
              // Validation of request data
              $validatedData = $request->validate([
-                 'advertisement_id' => 'required|exists:advertisements,id',
-                 'user_id' => 'nullable|exists:users,id',
-                 'email_sent' => 'boolean'
+                'advertisement_id' => 'required|exists:advertisements,id',
+                'user_id' => 'nullable|exists:users,id',
+                'message' => 'nullable'
+                
                  
              ]);
  
