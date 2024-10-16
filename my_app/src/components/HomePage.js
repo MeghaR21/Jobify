@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
-import './App.css';
+import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { instance } from './components/MyAxios';
-import JobAdvert from './components/JobAdvert';
-import AdminDashboard from './components/AdminDashboard';
-import LoginPage from './components/LoginPage';
-import Suggestions from './components/Suggestions';
-import JobAdForm from './components/Recruiter';
+import JobAdvert from './JobAdvert';
+import { instance } from './MyAxios';
+import { Link } from 'react-router-dom';
 
-function App() {
+function HomePage({ darkMode, language }) {
   const [jobAds, setJobAds] = useState([]);
-  const [isAdmin, ] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // For search engine
   const [filters, setFilters] = useState({
     title: '',
@@ -20,19 +15,6 @@ function App() {
     salary: '',
     date: '',
   });
-
-  const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState('EN'); // Default language
-
-  // Handle Dark/Light Theme Switch
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
-
-  // Handle Language Switch
-  const toggleLanguage = () => {
-    setLanguage((prevLang) => (prevLang === 'EN' ? 'FR' : 'EN'));
-  };
 
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
@@ -73,49 +55,6 @@ function App() {
   });
 
   return (
-    <Router>
-      <div className={`App ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
-        {/* Header */}
-        <header className={`d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
-          <div>
-            <h1>Jobify</h1>
-            <p>{language === 'EN' ? 'Find your next career hit!' : 'Trouvez votre prochaine carrière!'}</p>
-          </div>
-
-          {/* Dark/Light and Language Switches */}
-          <div className="d-flex align-items-center">
-            {/* Dark/Light Switch */}
-            <div className="form-check form-switch me-3">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="darkModeSwitch"
-                checked={darkMode}
-                onChange={toggleDarkMode}
-              />
-              <label className="form-check-label" htmlFor="darkModeSwitch">
-                {darkMode ? 'Dark' : 'Light'}
-              </label>
-            </div>
-
-            {/* Language Switch */}
-            <button className="btn btn-outline-primary me-3" onClick={toggleLanguage}>
-              {language === 'EN' ? 'FR' : 'EN'}
-            </button>
-          </div>
-        </header>
-
-        <Routes>
-          {/* Admin Dashboard Route */}
-          {/* <Route path="/" element={<LoginPage />} /> */}
-             <Route path="/AdminDashboard" element={<AdminDashboard />} />
-             <Route path="/Recruiter"element={<JobAdForm />}  />
-             {/* Add more routes as needed */}
-
-          {/* Job Board Route */}
-          <Route
-            path="/"
-            element={
               <>
               {/* Login Button and Suggestions Button */} 
               <Link to="/login"> 
@@ -202,7 +141,7 @@ function App() {
                         <div key={ad.id} className="col-md-4 mb-4">
                           <JobAdvert
                             title={ad.job_title}
-                            companyName={ad.company_id}
+                            companyName={ad.company_id} //ad.company.name
                             place={ad.location}
                             salary={ad.salary}
                             contractType={ad.contract_type}
@@ -219,37 +158,9 @@ function App() {
                     )}
                   </div>
                 </div>
-
-                {/* Footer */}
-                <footer className={`d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
-                  <div>
-                    <p>&copy; {new Date().getFullYear()} Jobify. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>
-                  </div>
-                  <div>
-                    <a href="/privacy-policy" className="text-decoration-none text-reset">{language === 'EN' ? 'Privacy Policy' : 'Politique de confidentialité'}</a>
-                    <span className="mx-2">|</span>
-                    <a href="/terms-of-service" className="text-decoration-none text-reset">{language === 'EN' ? 'Terms of Service' : 'Conditions d\'utilisation'}</a>
-                  </div>
-                </footer>
               </>
-            }
-          />
-
-          {/* Login Route */}
-          <Route
-            path="/login"
-            element={!isAdmin ? <LoginPage /> : <Navigate to="/AdminDashboard" />}
-          />
-
-          {/* Suggestions Route */}
-          <Route
-            path="/suggestions"
-            element={<Suggestions darkMode={darkMode} toggleDarkMode={toggleDarkMode} language={language} toggleLanguage={toggleLanguage} />}
-          />
-        </Routes>
-      </div>
-    </Router>
+            
   );
 }
 
-export default App;
+export default HomePage;

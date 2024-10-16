@@ -93,11 +93,11 @@ function JobAdvertUser({
         {isExpanded && (
           <div className="full-description">
             <p>{fullDescription}</p>
-            <p><strong>Company:</strong> {companyName}</p>
-            <p><strong>Location:</strong> {place}</p>
-            <p><strong>Contract Type:</strong> {contractType}</p>
-            <p><strong>Salary:</strong> {salary}</p>
-            <p><strong>Date Posted:</strong> {creationDate}</p>
+            <p><strong></strong> {companyName}</p>
+            <p><strong></strong> {place}</p>
+            <p><strong></strong> {contractType}</p>
+            <p><strong></strong> {salary}</p>
+            <p><strong>Date</strong> {creationDate}</p>
           </div>
         )}
 

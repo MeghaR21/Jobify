@@ -42,10 +42,10 @@ class LoginPage extends Component {
 
     instance.post("/login", { email, password })
       .then(response => {
-        localStorage.setItem('token', response.data.token); // Store token
+        localStorage.setItem('token', response.data.access_token); // Store token
 
         // Check user role
-        const userRole = response.data.role; // Adjust based on your API response structure
+        const userRole = response.data.user.role; // Adjust based on your API response structure
 
         // Redirect based on role
         if (userRole === 'admin') {
@@ -53,7 +53,7 @@ class LoginPage extends Component {
         } else if (userRole === 'recruiter') {
           this.props.navigate('/Recruiter'); // Redirect to Recruiter page
         } else {
-          this.props.navigate('/AppUser'); // Redirect to User app
+          this.props.navigate('/app-user'); // Redirect to User app
         }
       })
       .catch(() => {
@@ -190,7 +190,7 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Form.Group controlId="formSignUpMessage" className="mt-3">
+                {/* <Form.Group controlId="formSignUpMessage" className="mt-3">
                   <Form.Label>Message (to apply to company)</Form.Label>
                   <Form.Control
                     type="text"
@@ -200,7 +200,7 @@ class LoginPage extends Component {
                     onChange={this.handleSignUpChange}
                     required
                   />
-                </Form.Group>
+                </Form.Group> */}
 
                 <Form.Group controlId="formSignUpPassword" className="mt-3">
                   <Form.Label>Password</Form.Label>
