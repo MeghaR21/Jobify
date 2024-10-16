@@ -14,6 +14,7 @@ class Application extends Model
         'advertisement_id',      // ID du poste pour lequel la candidature est faite
         'user_id',   // ID de la personne qui postule
         'message',
+        'unregistereduser_id',
         // Ajoutez d'autres champs si nécessaire
     ];
 

@@ -31,8 +31,10 @@ class ApplicationController extends Controller
              // Validation of request data
              $validatedData = $request->validate([
                 'advertisement_id' => 'required|exists:advertisements,id',
-                'user_id' => 'nullable|exists:users,id',
+                'user_id' => 'required|exists:users,id',
+                'unregistereduser_id' => 'required|exists:unregistereduser,id',
                 'message' => 'nullable'
+
  
                  
              ]);
@@ -66,7 +68,8 @@ class ApplicationController extends Controller
              // Validation of request data
              $validatedData = $request->validate([
                 'advertisement_id' => 'required|exists:advertisements,id',
-                'user_id' => 'nullable|exists:users,id',
+                'user_id' => 'required|exists:users,id',
+                'unregistereduser_id' => 'required|exists:unregistereduser,id',
                 'message' => 'nullable'
                 
                  

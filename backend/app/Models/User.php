@@ -63,7 +63,8 @@ class User extends Authenticatable
         return $this->hasMany(Advertisement::class, 'user_id')->where('role', 'recruiter');
     }
 
-    // Si l'utilisateur est un recruteur, il appartient à une entreprise
+    // Si l'utilisateur est un recruteur, il appartient à une entreprise  
+    //je sais pas si je dois rajouter apres pour verfier le role
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
