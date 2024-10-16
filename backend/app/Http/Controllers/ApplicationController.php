@@ -18,7 +18,8 @@ class ApplicationController extends Controller
     public function index()
     {
         try {
-            $applications = Application::with(['user', 'unregistereduser'])->get();
+            // $applications = Application::with(['user', 'unregistereduser'])->get();
+            $applications = Application::all();
             return response()->json($applications);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to fetch applications'], 500);
@@ -30,45 +31,53 @@ class ApplicationController extends Controller
     {
         try {
             // Validation of request data
+
+            $userIsAuthenticated = auth()->check();
+            
+
             $validatedData = $request->validate([
             'advertisement_id' => 'required|exists:advertisements,id',
-            'user_id' => 'sometimes|exists:users,id',
-            'unregistereduser_id' =>'required_without:user_id',
             'message' => 'required|string',
-            'first_name' => 'required_without:user_id|string|max:255',
-            'email' => 'nullable|string|email|unique:unregistered_users,email|max:255|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
-            'last_name' => 'required_without:user_id|string|max:255',
-            'phone' => 'required_without:user_id|string|unique:unregistered_users,phone|regex:/^\+?[0-9]{1,4}?[-. ]?(\(?\d{1,3}?\)?[-. ]?)?\d{1,4}[-. ]?\d{1,4}[-. ]?\d{1,9}$/',
+            'first_name' =>  $userIsAuthenticated ? 'nullable' : 'required|string|max:255',
+            'last_name' => $userIsAuthenticated ? 'nullable' : 'required|string|max:255',
+            'phone' =>  $userIsAuthenticated ? 'nullable' :'nullable|string|regex:/^\+?[0-9]{1,4}?[-. ]?(\(?\d{1,3}?\)?[-. ]?)?\d{1,4}[-. ]?\d{1,4}[-. ]?\d{1,9}$/',
+            'email' => $userIsAuthenticated ? 'nullable':'required|string|email|max:255|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+           
+            
 
         
             ]);
-
-                // Vérifier si l'utilisateur est connecté
-            if (!empty($validatedData['user_id'])) {
-                // Utilisateur connecté
+            if ($userIsAuthenticated) {
+                // Utilisateur connecté : on associe l'ID utilisateur
+                $userId = auth()->id();
+                
                 Application::create([
                     'message' => $validatedData['message'],
-                    'user_id' => $validatedData['user_id'], // Associer l'utilisateur connecté
+                    'user_id' => $userId,
                     'advertisement_id' => $validatedData['advertisement_id'],
                 ]);
+
+           
                 return response()->json(['message' => 'Application created successfully!'], 201);
             } else {
                 // Utilisateur non connecté
                 $unregisteredData = $unregisteredData = [
                     'first_name' => $validatedData['first_name'],
                     'last_name' => $validatedData['last_name'],
-                    'email' => $validatedData['email'] ?? null,
+                    'email' => $validatedData['email'],
                     'phone' => $validatedData['phone'],
                 ];
 
                 // Vérifier si l'utilisateur non enregistré existe déjà
-                $existingUser = Unregistereduser::where('phone', $unregisteredData['phone'])->first();
+                $existingUser = Unregistereduser::where('phone', $unregisteredData['phone'])
+                    ->orWhere('email', $unregisteredData['email'])->first();
+               
 
                 if ($existingUser) {
                     // Créer une candidature associée à l'utilisateur existant
                     Application::create([
                         'message' => $validatedData['message'],
-                        'unregistered_user_id' => $existingUser->id,
+                        'unregistereduser_id' => $existingUser->id,
                         'advertisement_id' => $validatedData['advertisement_id'],
                     ]);
                     return response()->json(['message' => 'Application created successfully!'], 201);

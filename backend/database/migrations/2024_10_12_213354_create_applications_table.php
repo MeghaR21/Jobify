@@ -16,7 +16,7 @@ return new class extends Migration
             $table->text('message'); // message recupere lors de la connexion
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');  // Référence à la personne qui postule
             $table->foreignId('advertisement_id')->constrained('advertisements')->onDelete('cascade');  // Référence à l'annonce d'emploi
-            $table->foreignId('unregistered_user_id')->nullable()->constrained('unregistered_users')->onDelete('cascade');
+            $table->foreignId('unregistereduser_id')->nullable()->constrained('unregisteredusers')->onDelete('cascade');
             $table->timestamps();
         });
     }
