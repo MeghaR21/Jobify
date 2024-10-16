@@ -26,30 +26,26 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //Route pour s'enregistrer et pour se login
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-
-//Route APi ressource
-Route::apiResource('advertisements', AdvertisementController::class);
-Route::apiResource('companies', CompanyController::class);
-Route::apiResource('users', UserController::class);
-Route::apiResource('applications', ApplicationController::class);
-Route::apiResource('unregisteredusers', UnregistereduserController::class);
 
 
-//routes qui necessitent pas d'authentification
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+   
+
+
+
+//public routes
 Route::get('/advertisements_list', [AdvertisementController::class, 'index']);         // Fetch all advertisements
 Route::get('/advertisements_show/{id}', [AdvertisementController::class, 'show']);      // Fetch a specific advertisement
 Route::get('/companies_list', [CompanyController::class, 'index']);          // Fetch all companies
 Route::get('/companies_show/{id}', [CompanyController::class, 'show']);
 
 //la route application-create ne neccesite pas d'authentification
-Route::post('/applications_create', [ApplicationController::class, 'store']); // POST /applications for all users
+Route::post('/applications_create_unregistered', [ApplicationController::class, 'store']); // POST /applications for all unregisteredusers
 
 
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
    
 
     //route pour la table advertisements
@@ -65,6 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/companies_delete/{company}', [CompanyController::class, 'destroy']); // Delete a company
 
     //route pour la table application
+    Route::post('/applications_create_registered', [ApplicationController::class, 'store']);
     Route::get('/applications_list', [ApplicationController::class, 'index']); // GET /applications
     Route::get('/applications_show/{id}', [ApplicationController::class, 'show']); // GET /applications/{id}
     Route::put('/applications_update/{id}', [ApplicationController::class, 'update']); // PUT /applications/{id}
@@ -87,10 +84,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     //Route pour la table unregistered_users (en principe c'est accessible que par l'admin )
+    // Route::middleware('admin')->group(function ()
     Route::get('/unregistered_users_list', [UnregistereduserController::class, 'index']);
     Route::get('/unregistered_users_show/{id}', [UnregistereduserController::class, 'show']);
     Route::delete('/unregistered_users_delete/{id}', [UnregistereduserController::class, 'destroy']);
 
+    //logout
+    Route::post('logout', [AuthController::class, 'logout']);
 
 
         
