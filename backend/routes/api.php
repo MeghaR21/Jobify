@@ -6,7 +6,9 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UnregistereduserController;
 use App\Http\Controllers\ApplicationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,8 @@ Route::apiResource('advertisements', AdvertisementController::class);
 Route::apiResource('companies', CompanyController::class);
 Route::apiResource('users', UserController::class);
 Route::apiResource('applications', ApplicationController::class);
+Route::apiResource('unregisteredusers', UnregistereduserController::class);
+
 
 //routes qui necessitent pas d'authentification
 Route::get('/advertisements_list', [AdvertisementController::class, 'index']);         // Fetch all advertisements
@@ -40,7 +44,9 @@ Route::get('/companies_list', [CompanyController::class, 'index']);          // 
 Route::get('/companies_show/{id}', [CompanyController::class, 'show']);
 
 //la route application-create ne neccesite pas d'authentification
-Route::post('/applications_create', [ApplicationController::class, 'store']); // POST /applications
+Route::post('/applications_create', [ApplicationController::class, 'store']); // POST /applications for all users
+
+
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -80,12 +86,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/users_delete/{id}', [UserController::class, 'destroy']);
 
 
+    //Route pour la table unregistered_users (en principe c'est accessible que par l'admin )
+    Route::get('/unregistered_users_list', [UnregistereduserController::class, 'index']);
+    Route::get('/unregistered_users_show/{id}', [UnregistereduserController::class, 'show']);
+    Route::delete('/unregistered_users_delete/{id}', [UnregistereduserController::class, 'destroy']);
 
 
 
-
-
-    // Creer les routes pour l'admin
         
 });
 

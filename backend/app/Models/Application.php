@@ -29,4 +29,10 @@ class Application extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    // Relation avec les utilisateurs non enregistrés
+    public function unregisteredUser()
+    {
+        return $this->belongsTo(Unregistereduser::class);
+    }
+
 }
