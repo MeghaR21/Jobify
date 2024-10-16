@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { instance } from './MyAxios';
+import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
@@ -241,10 +241,6 @@ class LoginPage extends Component {
             </>
           )}
 
-          {/* Footer */}
-          <footer className="bg-dark text-white text-center py-3">
-            <p>&copy; 2024 Job Board. All rights reserved.</p>
-          </footer>
         </Container>
       </>
     );

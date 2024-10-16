@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from './MyAxios';
+import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 
-function Profile() {
+
+function Profile({language }) {
   const [first, setFirst] = useState('');
   const [last, setLast] = useState('');
   const [name, setName] = useState('');
@@ -41,17 +42,11 @@ function Profile() {
     if (isEditing) {
       // Update user information
       instance
-        .put('/USER_UPDATE', payload, {
+        .put('/users_update/{id}', payload, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         .then(() => alert('Account updated successfully'))
         .catch((error) => console.error('Error updating account:', error));
-    } else {
-      // Register new user
-      instance
-        .post('/register', { ...payload, password_confirmation: passwordConfirm })
-        .then(() => alert('Account created successfully'))
-        .catch((error) => console.error('Error creating account:', error));
     }
   };
 
@@ -135,15 +130,14 @@ function Profile() {
           </Form.Group>
 
           <Button type="submit" className="btn btn-primary">
-            {isEditing ? 'Update' : 'Register'}
+            {isEditing ? 'Update' : '/users_update/{id}'}
           </Button>
         </Form>
+          {/* Log Out Button */}
+          {/* <button className="btn btn-danger" onClick={Logout}>
+              {language === 'EN' ? 'Log Out' : 'Déconnexion'}
+          </button> */}
       </Container>
-
-      {/* Footer */}
-      <footer className="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2024 Job Board. All rights reserved.</p>
-      </footer>
     </>
   );
 }

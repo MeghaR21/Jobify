@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { instance } from './MyAxios';
+import React, { useState, useEffect } from 'react';
+import { instance } from './myaxios';
 
-function JobAdvert({ 
+function JobAdvertUser({ 
   title, 
   companyName, 
   place,
   contractType,
-  salary, // Fixed typo here
+  salary, 
   description, 
   fullDescription, 
-  creationDate 
+  creationDate,
+  userInfo // Assume this prop contains user information
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
@@ -19,6 +20,18 @@ function JobAdvert({
     phone: '',
     message: ''
   });
+
+  useEffect(() => {
+    // Pre-fill form data with user information if available
+    if (userInfo) {
+      setFormData({
+        name: userInfo.name || '',
+        email: userInfo.email || '',
+        phone: userInfo.phone || '',
+        message: ''
+      });
+    }
+  }, [userInfo]);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -51,7 +64,8 @@ function JobAdvert({
       return;
     }
 
-    instance.post('/applications_create', {
+    fetch('/api/apply', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -84,7 +98,7 @@ function JobAdvert({
             <p><strong></strong> {place}</p>
             <p><strong></strong> {contractType}</p>
             <p><strong></strong> {salary}</p>
-            <p><strong>Date:</strong> {creationDate}</p>
+            <p><strong>Date</strong> {creationDate}</p>
           </div>
         )}
 
@@ -97,40 +111,7 @@ function JobAdvert({
 
         {isApplying && (
           <form onSubmit={handleFormSubmit} className="mt-3">
-            <h4 className="mb-3">Apply for {title}</h4>
-            <div className="mb-3">
-              <label className="form-label">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="name"
-                value={formData.name}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                value={formData.email}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Phone</label>
-              <input
-                type="tel"
-                className="form-control"
-                name="phone"
-                value={formData.phone}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
+            <h4 className="mb-3">Apply for {title}</h4> 
             <div className="mb-3">
               <label className="form-label">Message</label>
               <textarea
@@ -141,7 +122,7 @@ function JobAdvert({
               />
             </div>
             <button type="submit" className="btn btn-warning text-dark me-2">
-              Submit
+              Apply
             </button>
             <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
               Close
@@ -153,4 +134,4 @@ function JobAdvert({
   );
 }
 
-export default JobAdvert;
+export default JobAdvertUser;

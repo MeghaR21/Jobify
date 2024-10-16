@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from './MyAxios';
+import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
 
-function Profile() {
+function Modify() {
   const [first, setFirst] = useState('');
   const [last, setLast] = useState('');
-  const [name, setName] = useState('');
+  const [] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -46,6 +46,12 @@ function Profile() {
         })
         .then(() => alert('Account updated successfully'))
         .catch((error) => console.error('Error updating account:', error));
+    } else {
+      // Register new user
+      instance
+        .post('/register', { ...payload, password_confirmation: passwordConfirm })
+        .then(() => alert('Account created successfully'))
+        .catch((error) => console.error('Error creating account:', error));
     }
   };
 
@@ -129,16 +135,13 @@ function Profile() {
           </Form.Group>
 
           <Button type="submit" className="btn btn-primary">
-            {isEditing ? 'Update' : '/users_update/{id}'}
+            {isEditing ? 'Update' : 'Register'}
           </Button>
         </Form>
-          {/* Log Out Button */}
-          <button className="btn btn-danger" onClick={handleLogout}>
-              {language === 'EN' ? 'Log Out' : 'Déconnexion'}
-          </button>
       </Container>
+
     </>
   );
 }
 
-export default Profile;
+export default Modify;

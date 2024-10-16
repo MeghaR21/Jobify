@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { instance } from './MyAxios';
-import JobAdvertUser from './JobAdvertUser';
+import { instance } from './myaxios';
+import JobAdvertUser from './jobadvertuser';
 
 function AppUserPage() {
   const [jobAds, setJobAds] = useState([]);
@@ -18,16 +18,6 @@ function AppUserPage() {
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState('EN'); // Default language
   const navigate = useNavigate(); // For navigation after logout
-
-  // Toggle Light/Dark Theme
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
-
-  // Toggle Language
-  const toggleLanguage = () => {
-    setLanguage((prevLang) => (prevLang === 'EN' ? 'FR' : 'EN'));
-  };
 
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
@@ -71,18 +61,17 @@ function AppUserPage() {
     const matchesSalary = filters.salary ? ad.salary >= filters.salary : true;
     const matchesDate = filters.date ? new Date(ad.creation_date) >= new Date(filters.date) : true;
 
-    return (
-      matchesSearchTerm &&
-      matchesTitle &&
-      matchesCompany &&
-      matchesLocalization &&
-      matchesSalary &&
-      matchesDate
-    );
+    return matchesSearchTerm && matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
   });
 
   return (
     <>
+    <Link to="/profile"> 
+      <button className="btn btn-pale-orange"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
+    </Link>
+    <Link to="/suggestions" className="ms-3">
+      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions / Ideas' : 'Suggestions / Idées'} </button>
+    </Link>
       {localStorage.getItem('token') && (
         <>
           {/* Search Bar and Filters */}
@@ -94,7 +83,7 @@ function AppUserPage() {
                   placeholder={
                     language === 'EN'
                       ? 'Search in job description...'
-                      : 'Rechercher dans la description de l\'emploi...'
+                      : "Rechercher dans la description de l'emploi..."
                   }
                   className="form-control"
                   value={searchTerm}

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'; // Import useState
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { instance } from './MyAxios';
-import LoginPage from './LoginPage';
-import AdminDashboard from './AdminDashboard';
+import { instance } from './myaxios';
+import LoginPage from './login';
+import AdminDashboard from './admin-dashboard';
 
 
 const JobAdForm = () => {
@@ -24,7 +24,7 @@ const JobAdForm = () => {
     e.preventDefault();
 
     // Post the form data to the API
-    instance.post('/advertisements_create', formData) // Adjust the API endpoint based on your setup
+    instance.post('/advertisements_create', formData)
       .then(response => {
         alert('Job ad created successfully!');
         // Clear the form after successful submission

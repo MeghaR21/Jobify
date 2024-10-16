@@ -10,7 +10,6 @@ function Suggestions({ darkMode, toggleDarkMode, language, toggleLanguage }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here, you can send the suggestion to the backend or handle it as needed
     alert('Suggestion submitted: ' + suggestion);
     setSuggestion('');
   };
