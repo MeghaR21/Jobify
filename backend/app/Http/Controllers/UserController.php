@@ -48,14 +48,13 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'first_name' => 'sometimes|string|max:255',
                 'last_name' =>  'sometimes|string|max:255',
-                'phone' => 'sometimes|string|max:13',
+                'phone' => 'sometimes|string|unique:users,phone,'.$id.'|regex:/^\+?[0-9]{1,4}?[-. ]?(\(?\d{1,3}?\)?[-. ]?)?\d{1,4}[-. ]?\d{1,4}[-. ]?\d{1,9}$/',
                 'email' => 'sometimes|string|email|max:255|unique:users,email,'.$id.'|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
                 'password' => 'sometimes|string|min:8', // Optional password validation
             ]);
 
             $user = User::findOrFail($id);
 
-            // Hash the password if it is being updated
             // Hash the password if it is being updated
             if (isset($validatedData['password'])) {
                 $validatedData['password'] = Hash::make($validatedData['password']); // Use Hash::make for consistency

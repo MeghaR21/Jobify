@@ -14,6 +14,7 @@ class Application extends Model
         'advertisement_id',      // ID du poste pour lequel la candidature est faite
         'user_id',   // ID de la personne qui postule
         'message',
+        'unregistereduser_id',
         // Ajoutez d'autres champs si nécessaire
     ];
 
@@ -28,4 +29,10 @@ class Application extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    // Relation avec les utilisateurs non enregistrés
+    public function unregisteredUser()
+    {
+        return $this->belongsTo(Unregistereduser::class);
+    }
+
 }
