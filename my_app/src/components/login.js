@@ -18,7 +18,9 @@ class LoginPage extends Component {
         email: '',
         password: '',
         confirmPassword: '',
-      }
+        isRecruiter: false,
+        company_id: '', // to store selected company ID
+      },
     };
   }
 
@@ -27,13 +29,37 @@ class LoginPage extends Component {
   };
 
   handleSignUpChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    const isCheckbox = type === 'checkbox';
     const { signUpData } = this.state;
+
+    // If recruiter checkbox is checked, fetch companies
+    if (name === 'isRecruiter' && checked) {
+      this.fetchCompanies(); // Fetch companies when checked
+    }
+
     this.setState({
       signUpData: {
         ...signUpData,
-        [e.target.name]: e.target.value,
+        [name]: isCheckbox ? checked : value,
       }
     });
+  };
+
+  fetchCompanies = () => {
+    if (this.state.companies.length === 0) { // Only fetch if companies haven't been fetched yet
+      this.setState({ loadingCompanies: true }); // Set loading state
+      instance.get('/companies_list') // Adjust this endpoint based on your backend
+        .then(response => {
+          this.setState({
+            companies: response.data,
+            loadingCompanies: false, // Set loading to false when data arrives
+          });
+        })
+        .catch(error => {
+          this.setState({ error: 'Error fetching companies: ' + error.message, loadingCompanies: false });
+        });
+    }
   };
 
   handleSubmit = (e) => {
@@ -70,7 +96,18 @@ class LoginPage extends Component {
       return;
     }
 
-    instance.post('/register', signUpData)
+    // Include the role based on whether the user is a recruiter
+    const payload = {
+      first_name: signUpData.firstName,
+      last_name: signUpData.lastName,
+      phone: signUpData.phone,
+      email: signUpData.email,
+      password: signUpData.password,
+      password_confirmation: signUpData.confirmPassword, 
+      role: signUpData.isRecruiter ? 'recruiter' : 'candidate', // Set role accordingly
+    };
+
+    instance.post('/register', payload)
       .then(() => {
         alert('Registration successful! Please log in.');
         this.setState({ showSignUp: false }); // Hide Sign-Up form after successful registration
@@ -88,11 +125,10 @@ class LoginPage extends Component {
   };
 
   render() {
-    const { email, password, error, showSignUp, signUpData } = this.state;
+    const { email, password, error, showSignUp, signUpData, companies, loadingCompanies } = this.state;
 
     return (
       <>
-
         <Container className="mt-5">
           <h2>{showSignUp ? 'Sign Up' : 'Login'}</h2>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -124,7 +160,7 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-4">
+                <Button variant="warning" type="submit" className="mt-4">
                   Login
                 </Button>
               </Form>
@@ -142,18 +178,6 @@ class LoginPage extends Component {
           {showSignUp && (
             <>
               <Form onSubmit={this.handleSignUpSubmit}>
-                <Form.Group controlId="formLastName" className="mt-3">
-                  <Form.Label>Last Name</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter Last Name"
-                    name="lastName"
-                    value={signUpData.lastName}
-                    onChange={this.handleSignUpChange}
-                    required
-                  />
-                </Form.Group>
-
                 <Form.Group controlId="formFirstName" className="mt-3">
                   <Form.Label>First Name</Form.Label>
                   <Form.Control
@@ -161,6 +185,18 @@ class LoginPage extends Component {
                     placeholder="Enter First Name"
                     name="firstName"
                     value={signUpData.firstName}
+                    onChange={this.handleSignUpChange}
+                    required
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formLastName" className="mt-3">
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter Last Name"
+                    name="lastName"
+                    value={signUpData.lastName}
                     onChange={this.handleSignUpChange}
                     required
                   />
@@ -190,18 +226,6 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                {/* <Form.Group controlId="formSignUpMessage" className="mt-3">
-                  <Form.Label>Message (to apply to company)</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter text"
-                    name="message"
-                    value={signUpData.message}
-                    onChange={this.handleSignUpChange}
-                    required
-                  />
-                </Form.Group> */}
-
                 <Form.Group controlId="formSignUpPassword" className="mt-3">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
@@ -226,8 +250,42 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-4">
-                  Validate
+                <Form.Group controlId="formIsRecruiter" className="mt-3">
+                  <Form.Check
+                    type="checkbox"
+                    label="Are you a recruiter?"
+                    name="isRecruiter"
+                    checked={signUpData.isRecruiter}
+                    onChange={this.handleSignUpChange}
+                  />
+                </Form.Group>
+
+                {signUpData.isRecruiter && (
+                  <Form.Group controlId="formCompany" className="mt-3">
+                    <Form.Label>Select Company</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="company_id"
+                      value={signUpData.company_id}
+                      onChange={this.handleSignUpChange}
+                      required
+                    >
+                      <option value="">Select a company</option>
+                      {loadingCompanies ? (
+                        <option disabled>Loading companies...</option>
+                      ) : (
+                        companies.map((company) => (
+                          <option key={company.id} value={company.id}>
+                            {company.name}
+                          </option>
+                        ))
+                      )}
+                    </Form.Control>
+                  </Form.Group>
+                )}
+
+                <Button variant="warning" type="submit" className="mt-4">
+                  Sign Up
                 </Button>
               </Form>
 
@@ -240,17 +298,14 @@ class LoginPage extends Component {
               </div>
             </>
           )}
-
         </Container>
       </>
     );
   }
 }
 
-// Use withRouter to enable navigation
-const LoginPageWithRouter = (props) => {
+// Wrap component with withRouter to access navigate
+export default function WrappedLoginPage(props) {
   const navigate = useNavigate();
   return <LoginPage {...props} navigate={navigate} />;
-};
-
-export default LoginPageWithRouter;
+}
