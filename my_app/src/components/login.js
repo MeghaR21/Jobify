@@ -49,7 +49,7 @@ class LoginPage extends Component {
 
         // Redirect based on role
         if (userRole === 'admin') {
-          this.props.navigate('/AdminDashboard'); // Redirect to Admin Dashboard
+          this.props.navigate('/admin-dashboard'); // Redirect to Admin Dashboard
         } else if (userRole === 'recruiter') {
           this.props.navigate('/Recruiter'); // Redirect to Recruiter page
         } else {

@@ -120,16 +120,6 @@ function Profile({language }) {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Message (to apply to company)</Form.Label>
-            <Form.Control
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </Form.Group>
-
           <Button type="submit" className="btn btn-warning">
             {isEditing ? 'Update' : '/users_update/{id}'}
           </Button>
