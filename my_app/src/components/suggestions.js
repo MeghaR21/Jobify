@@ -16,13 +16,6 @@ function Suggestions({ darkMode, toggleDarkMode, language, toggleLanguage }) {
 
   return (
     <div className={`App ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
-      {/* Profile Button */}
-      <div className="d-flex justify-content-end p-3">
-        <Link to="/profile">
-          <button className="btn btn-pale-orange">Profile</button>
-        </Link>
-      </div>
-
       {/* Suggestions Form */}
       <div className="container my-5">
         <h2>{language === 'EN' ? 'Suggestions / Ideas' : 'Suggestions / Idées'}</h2>
@@ -37,7 +30,7 @@ function Suggestions({ darkMode, toggleDarkMode, language, toggleLanguage }) {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-warning">
             {language === 'EN' ? 'Submit' : 'Soumettre'}
           </button>
         </form>

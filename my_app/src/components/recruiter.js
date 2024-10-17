@@ -82,6 +82,10 @@ const JobAdForm = ({ mode = 'create' }) => {
 
   return (
     <div className="container my-5">
+        {/* Logout Button */}
+        <Button className="mt-3 btn btn-danger" onClick={handleLogout}>
+          Logout
+        </Button>
       <h2>{mode === 'create' ? 'Create a New Job Ad' : 'Update Job Ad'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

@@ -67,12 +67,16 @@ function AppUserPage() {
 
   return (
     <>
+    {/* Logout Button */}
+    <Button className="mt-3 btn btn-warning" onClick={handleLogout}>
+      Logout
+    </Button>
     <Link to="/profile">  
       <button className="btn btn-pale-orange"> {language === 'EN' ? 'My Profils' : 'Mon Profile'} </button> 
     </Link>
     <button onClick={handleLogout}>Logout {language === 'EN' ? 'Log Out' : 'Déconnexion'} </button>
     <Link to="/suggestions" className="ms-3">
-      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
+      <button className="btn btn-warning"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
     </Link>
       {localStorage.getItem('token') && (
         <>

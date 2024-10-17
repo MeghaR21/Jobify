@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
-// import LogoutButton from './components/logout';
+
 
 
 function Profile({language }) {
@@ -15,6 +15,8 @@ function Profile({language }) {
   const [message, setMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
+
+  const navigate = useNavigate(); //after logout
 
   useEffect(() => {
     // Check if the user is already logged in
@@ -54,6 +56,10 @@ function Profile({language }) {
   return (
     <> 
       <Container>
+        {/* Logout Button */}
+        <Button className="mt-3 btn btn-warning" onClick={handleLogout}>
+          Logout
+        </Button>
         <h2 className="mt-4">Profile</h2>
         <h4>{isEditing ? 'Modify Account' : 'Register'}</h4>
         {error && <Alert variant="danger">{error}</Alert>}

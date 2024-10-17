@@ -39,29 +39,33 @@ function HomePage({ darkMode, language }) {
   // Handle filter changes
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setFilters({ ...filters, [name]: value });
   };
 
-  // Filtered and searched job ads
   const filteredJobAds = jobAds.filter(ad => {
-    const matchesSearchTerm = ad.description.toLowerCase().includes(searchTerm);
-    const matchesTitle = filters.title ? ad.title.toLowerCase().includes(filters.title.toLowerCase()) : true;
-    const matchesCompany = filters.company ? ad.company_name.toLowerCase().includes(filters.company.toLowerCase()) : true;
-    const matchesLocalization = filters.localization ? ad.place.toLowerCase().includes(filters.localization.toLowerCase()) : true;
-    const matchesSalary = filters.salary ? ad.salary >= filters.salary : true;
-    const matchesDate = filters.date ? new Date(ad.creation_date) >= new Date(filters.date) : true;
+    const matchesSearchTerm = ad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false;
+    const matchesTitle = filters.title ? ad.title?.toLowerCase().includes(filters.title?.toLowerCase() || '') : true;
+    const matchesCompany = filters.company ? ad.company_name?.toLowerCase().includes(filters.company?.toLowerCase() || '') : true;
+    const matchesLocalization = filters.localization ? ad.place?.toLowerCase().includes(filters.localization?.toLowerCase() || '') : true;
+    const matchesSalary = filters.salary ? (ad.salary >= filters.salary) : true;
+    const matchesDate = filters.date ? (new Date(ad.creation_date) >= new Date(filters.date)) : true;
 
+    console.log(`Ad: ${ad.title}, matchesSearchTerm: ${matchesSearchTerm}, matchesTitle: ${matchesTitle}, matchesCompany: ${matchesCompany}, matchesLocalization: ${matchesLocalization}, matchesSalary: ${matchesSalary}, matchesDate: ${matchesDate}`);
+  
     return matchesSearchTerm && matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
   });
+  
+  
 
   return (
     <>
     {/* Login Button and Suggestions Button */} 
     <Link to="/login"> 
-      <button className="btn btn-pale-orange"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
+      <button className="btn btn-warning"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
     </Link> 
     <Link to="/suggestions" className="ms-3"> 
-      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
+      <button className="btn btn-warning"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
     </Link>
       {/* Search Bar and Filters */}
       <div className="container my-4">

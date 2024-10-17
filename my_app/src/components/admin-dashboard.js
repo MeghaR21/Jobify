@@ -129,6 +129,10 @@ const Modify = () => {
 
   return (
     <div>
+      {/* Logout Button */}
+      <Button className="mt-3 btn btn-danger" onClick={handleLogout}>
+        Logout
+      </Button>
       <h1>Admin Dashboard</h1>
 
       {/* USERS TABLE */}
