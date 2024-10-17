@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { instance } from './myaxios';
 
-function JobAdvert({ 
+function JobAdvertUser({ 
   title, 
   companyName, 
   place,
@@ -93,11 +94,11 @@ function JobAdvert({
         {isExpanded && (
           <div className="full-description">
             <p>{fullDescription}</p>
-            <p><strong>Company:</strong> {companyName}</p>
-            <p><strong>Location:</strong> {place}</p>
-            <p><strong>Contract Type:</strong> {contractType}</p>
-            <p><strong>Salary:</strong> {salary}</p>
-            <p><strong>Date Posted:</strong> {creationDate}</p>
+            <p><strong></strong> {companyName}</p>
+            <p><strong></strong> {place}</p>
+            <p><strong></strong> {contractType}</p>
+            <p><strong></strong> {salary}</p>
+            <p><strong>Date</strong> {creationDate}</p>
           </div>
         )}
 
@@ -110,40 +111,7 @@ function JobAdvert({
 
         {isApplying && (
           <form onSubmit={handleFormSubmit} className="mt-3">
-            <h4 className="mb-3">Apply for {title}</h4>
-            <div className="mb-3">
-              <label className="form-label">Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="name"
-                value={formData.name}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                value={formData.email}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Phone</label>
-              <input
-                type="tel"
-                className="form-control"
-                name="phone"
-                value={formData.phone}
-                onChange={handleFormChange}
-                required
-              />
-            </div>
+            <h4 className="mb-3">Apply for {title}</h4> 
             <div className="mb-3">
               <label className="form-label">Message</label>
               <textarea
@@ -166,4 +134,4 @@ function JobAdvert({
   );
 }
 
-export default JobAdvert;
+export default JobAdvertUser;

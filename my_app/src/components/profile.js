@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from './MyAxios';
+import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
+// import Logout from './components/logout';
 
-function Profile() {
+
+function Profile({language }) {
   const [first, setFirst] = useState('');
   const [last, setLast] = useState('');
   const [name, setName] = useState('');
@@ -118,26 +120,15 @@ function Profile() {
             />
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Message (to apply to company)</Form.Label>
-            <Form.Control
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-            />
-          </Form.Group>
-
-          <Button type="submit" className="btn btn-primary">
-            {isEditing ? 'Update' : 'Register'}
+          <Button type="submit" className="btn btn-warning">
+            {isEditing ? 'Update' : '/users_update/{id}'}
           </Button>
         </Form>
+          {/* Log Out Button */}
+          {/* <button className="btn btn-warning" onClick={Logout}>
+            {language === 'EN' ? 'Log Out' : 'Déconnexion'}
+          </button> */}
       </Container>
-
-      {/* Footer */}
-      <footer className="bg-dark text-white text-center py-3 mt-5">
-        <p>&copy; 2024 Job Board. All rights reserved.</p>
-      </footer>
     </>
   );
 }

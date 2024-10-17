@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; 
-import { instance } from './MyAxios';
+import { instance } from './myaxios';
 
 function JobAdvert({ 
   title, 
@@ -52,8 +51,7 @@ function JobAdvert({
       return;
     }
 
-    instance('/applications_create', {
-      method: 'POST',
+    instance.post('/applications_create', {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -86,7 +84,7 @@ function JobAdvert({
             <p><strong></strong> {place}</p>
             <p><strong></strong> {contractType}</p>
             <p><strong></strong> {salary}</p>
-            <p><strong>Date Posted:</strong> {creationDate}</p>
+            <p><strong>Date:</strong> {creationDate}</p>
           </div>
         )}
 
