@@ -141,7 +141,7 @@ function HomePage({ darkMode, language }) {
               <div key={ad.id} className="col-md-4 mb-4">
                 <JobAdvert
                   title={ad.job_title}
-                  companyName={ad.company_id} //ad.company.name
+                  companyName={ad.company.name}
                   place={ad.location}
                   salary={ad.salary}
                   contractType={ad.contract_type}

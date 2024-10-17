@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
-// import Logout from './components/logout';
+// import LogoutButton from './components/logout';
 
 
 function Profile({language }) {
@@ -52,7 +52,7 @@ function Profile({language }) {
   };
 
   return (
-    <>
+    <> 
       <Container>
         <h2 className="mt-4">Profile</h2>
         <h4>{isEditing ? 'Modify Account' : 'Register'}</h4>
@@ -124,10 +124,6 @@ function Profile({language }) {
             {isEditing ? 'Update' : '/users_update/{id}'}
           </Button>
         </Form>
-          {/* Log Out Button */}
-          {/* <button className="btn btn-warning" onClick={Logout}>
-            {language === 'EN' ? 'Log Out' : 'Déconnexion'}
-          </button> */}
       </Container>
     </>
   );

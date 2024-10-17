@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } f
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './myaxios';
 import JobAdvertUser from './jobadvertuser';
-// import LogoutButton from './logout';
+
 
 function AppUserPage() {
   const [jobAds, setJobAds] = useState([]);
@@ -50,7 +50,7 @@ function AppUserPage() {
   const handleLogout = () => {
     localStorage.removeItem('token'); // Clear the token on logout
     setIsAdmin(false); // Reset admin state
-    navigate('/login'); // Redirect to login page
+    navigate('/'); // Redirect to login page
   };
 
   // Filtered and searched job ads
@@ -67,9 +67,10 @@ function AppUserPage() {
 
   return (
     <>
-    <Link to="/profile"> 
-      <button className="btn btn-pale-orange"> {language === 'EN' ? 'Profils' : 'Profile'} </button> 
+    <Link to="/profile">  
+      <button className="btn btn-pale-orange"> {language === 'EN' ? 'My Profils' : 'Mon Profile'} </button> 
     </Link>
+    <button onClick={handleLogout}>Logout {language === 'EN' ? 'Log Out' : 'Déconnexion'} </button>
     <Link to="/suggestions" className="ms-3">
       <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
     </Link>
@@ -158,7 +159,7 @@ function AppUserPage() {
                   <div key={ad.id} className="col-md-4 mb-4">
                     <JobAdvertUser
                       title={ad.job_title}
-                      companyName={ad.company_id}
+                      companyName={ad.company.name}
                       place={ad.location}
                       salary={ad.salary}
                       contractType={ad.contract_type}
@@ -179,9 +180,6 @@ function AppUserPage() {
               )}
             </div>
           </div>
-
-          {/* Log Out Button */}
-         {/* <LogoutButton {language === 'EN' ? 'Log Out' : 'Déconnexion'}/> */}
         </>
       )}
     </>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './components/myaxios';
@@ -12,7 +12,7 @@ import AppUserPage from './components/app-user';
 import JobAdvert from './components/jobadvert'
 import JobAdvertUser from './components/jobadvertuser';
 import Profile from './components/profile';
-import LogoutButton from './components/logout';
+import Wizard from './components/wizard.js';
 
 
 function AppRouter() {
@@ -81,7 +81,7 @@ function AppRouter() {
         </header>
 
         <Routes>
-          {/* <Route path="/" element={<LoginPage />} /> */}
+          {/* <Route path="/" element={<Fonction />} /> */}
           <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
           <Route path="/recruiter"element={<JobAdForm/>}/>
           <Route path="/app-user"element={<AppUserPage/>}/>
@@ -90,7 +90,7 @@ function AppRouter() {
           <Route path="/jobadvert" element={<JobAdvert/>}/>
           <Route path="/jobadvertuser" element={<JobAdvertUser/>}/>
           <Route path="/profile" element={<Profile/>}/>
-          <Route path="/logout" element={<LogoutButton/>}/>
+          <Route path="/wizard" element={<Wizard/>}/>
 
           {/* Suggestions Route */}
           <Route path="/suggestions"

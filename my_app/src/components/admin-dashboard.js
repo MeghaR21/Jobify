@@ -1,159 +1,228 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Pagination } from 'react-bootstrap';
-import { instance } from './myaxios'; // Axios instance for API requests
+import { instance } from './myaxios';  // Import your axios instance
+import Wizard from './wizard.js';  // Import the RecordForm component
 
 const Modify = () => {
-  const [activeTable, setActiveTable] = useState('users'); // To track which table is active (users, companies, etc.)
-  const [records, setRecords] = useState([]); // Data to display in the table
-  const [currentPage, setCurrentPage] = useState(1); // Current page for pagination
-  const [totalPages, setTotalPages] = useState(1); // Total pages
-  const [showModal, setShowModal] = useState(false); // To show or hide modal
-  const [modalType, setModalType] = useState(''); // Create or Update modal
-  const [formData, setFormData] = useState({}); // Form data for Create/Update
+  const [authenticated, setAuthenticated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [users, setUsers] = useState([]);
+  const [advertisements, setAdvertisements] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editData, setEditData] = useState(null);  // Track data being edited
+  const [formTable, setFormTable] = useState(null);
+  const [fields, setFields] = useState([]); // Which table we're editing
+  const [page, setPage] = useState(1); // For pagination
+  const itemsPerPage = 5;
 
-  const recordsPerPage = 5; // Number of records per page
-
-  // Fetch records based on the active table
+  // Check if user is authenticated and fetch data
   useEffect(() => {
-    fetchRecords();
-  }, [activeTable, currentPage]);
-
-  // Function to fetch records for the active table
-  const fetchRecords = () => {
-    const url = `${activeTable}_list`; // dynamic URL based on activeTable
-    instance.get(`/${url}?page=${currentPage}&limit=${recordsPerPage}`)
+    instance.get('/user')
       .then(response => {
-        setRecords(response.data.records);
-        setTotalPages(Math.ceil(response.data.total / recordsPerPage));
+        setAuthenticated(true);
+        fetchData(); // Fetch data only if authenticated
       })
-      .catch(error => console.error('Error fetching data:', error));
+      .catch(() => {
+        setAuthenticated(false);
+        setErrorMessage('Failed to authenticate. Please log in.');
+      });
+  }, [page]);
+
+  const fetchData = () => {
+    instance.get(`/users_list?page=${page}&limit=${itemsPerPage}`)
+      .then(response => setUsers(response.data))
+      .catch(err => console.error(err));
+
+    instance.get(`/advertisements_list?page=${page}&limit=${itemsPerPage}`)
+      .then(response => setAdvertisements(response.data))
+      .catch(err => console.error(err));
+
+    instance.get(`/applications_list?page=${page}&limit=${itemsPerPage}`)
+      .then(response => setApplications(response.data))
+      .catch(err => console.error(err));
+
+    instance.get(`/companies_list?page=${page}&limit=${itemsPerPage}`)
+      .then(response => setCompanies(response.data))
+      .catch(err => console.error(err));
   };
 
-  // Handle Create/Update/Delete
-  const handleCreateUpdate = () => {
-    const url = modalType === 'create' ? `/${activeTable}_create` : `/${activeTable}_update/${formData.id}`;
-    const method = modalType === 'create' ? 'post' : 'put';
-    instance[method](url, formData)
-      .then(() => {
-        setShowModal(false);
-        fetchRecords(); // Refresh data after create/update
-      })
-      .catch(error => console.error('Error during create/update:', error));
+  const handleCreate = (table) => {
+    setEditData(null);  // No initial data (new record)
+    setFormTable(table);
+    setFields(getFieldsForTable(table)); 
+    setShowForm(true);  // Show the form modal
   };
 
-  const handleDelete = (id) => {
-    instance.delete(`/${activeTable}_delete/${id}`)
-      .then(() => fetchRecords()) // Refresh data after delete
-      .catch(error => console.error('Error deleting record:', error));
+  const handleUpdate = (table, id) => {
+    const record = getRecordById(table, id);
+    setEditData(record);  // Set data to be edited
+    setFormTable(table);
+    setFields(getFieldsForTable(table)); 
+    setShowForm(true);  // Show the form modal
   };
 
-  // Function to change the active table
-  const handleChangeTable = (tableName) => {
-    setActiveTable(tableName);
-    setCurrentPage(1); // Reset to first page when changing tables
-  };
-
-  // Pagination handler
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+  const handleDelete = (table, id) => {
+    if (window.confirm('Are you sure you want to delete this record?')) {
+      instance.delete(`/${table}_delete/${id}`)
+        .then(() => {
+          alert('Record deleted');
+          fetchData(); // Refresh data after deletion
+        })
+        .catch(err => console.error(err));
     }
   };
 
-  // Render table rows
-  const renderTableRows = () => {
-    return records.map((record, index) => (
-      <tr key={index}>
-        {Object.keys(record).map((key, idx) => (
-          <td key={idx}>{record[key]}</td>
-        ))}
-        <td>
-          <Button variant="warning" onClick={() => handleEdit(record)}>Update</Button>{' '}
-          <Button variant="danger" onClick={() => handleDelete(record.id)}>Delete</Button>
-        </td>
-      </tr>
-    ));
+  const getFieldsForTable = (table) => {
+    switch (table) {
+      case 'users':
+        return ['id', 'first_name', 'last_name', 'phone', 'email', 'role', 'company_id', 'created_at', 'updated_at'];
+      case 'advertisements':
+        return ['id', 'title', 'description', 'company_id', 'created_at', 'updated_at'];
+      case 'applications':
+        return ['id', 'message', 'user_id', 'advertisement_id', 'created_at', 'updated_at'];
+      case 'companies':
+        return ['id', 'name', 'email', 'address', 'website', 'created_at', 'updated_at'];
+      default:
+        return [];
+    }
+  };
+  
+  const getRecordById = (table, id) => {
+    // Function to get the correct record by ID
+    switch (table) {
+      case 'users':
+        return users.find(u => u.id === id);
+      case 'advertisements':
+        return advertisements.find(ad => ad.id === id);
+      case 'applications':
+        return applications.find(app => app.id === id);
+      case 'companies':
+        return companies.find(c => c.id === id);
+      default:
+        return null;
+    }
   };
 
-  // Handle Edit (fill formData and open modal)
-  const handleEdit = (record) => {
-    setFormData(record);
-    setModalType('update');
-    setShowModal(true);
+  const handleSubmit = (formData) => {
+    const endpoint = formTable === 'users' ? '/users_create' : `/${formTable}_create`;
+    if (editData) {
+      instance.put(`/${formTable}_update/${editData.id}`, formData)
+        .then(() => {
+          alert('Record updated successfully!');
+          fetchData();
+        })
+        .catch(err => console.error(err));
+    } else {
+      instance.post(endpoint, formData)
+        .then(() => {
+          alert('Record created successfully!');
+          fetchData();
+        })
+        .catch(err => console.error(err));
+    }
   };
+
+  if (!authenticated) {
+    return <div>{errorMessage}</div>;
+  }
 
   return (
-    <div className="container mt-5">
-      <h2>Admin Dashboard</h2>
-      
-      {/* Table selector */}
-      <div className="btn-group mb-4">
-        <Button onClick={() => handleChangeTable('users')}>Users</Button>
-        <Button onClick={() => handleChangeTable('companies')}>Companies</Button>
-        <Button onClick={() => handleChangeTable('advertisements')}>Advertisements</Button>
-        <Button onClick={() => handleChangeTable('applications')}>Applications</Button>
+    <div>
+      <h1>Admin Dashboard</h1>
+
+      {/* USERS TABLE */}
+      <Table
+        title="Users"
+        data={users}
+        handleCreate={() => handleCreate('users')}
+        handleUpdate={(id) => handleUpdate('users', id)}
+        handleDelete={(id) => handleDelete('users', id)}
+      />
+
+      {/* ADVERTISEMENTS TABLE */}
+      <Table
+        title="Advertisements"
+        data={advertisements}
+        handleCreate={() => handleCreate('advertisements')}
+        handleUpdate={(id) => handleUpdate('advertisements', id)}
+        handleDelete={(id) => handleDelete('advertisements', id)}
+      />
+
+      {/* APPLICATIONS TABLE */}
+      <Table
+        title="Applications"
+        data={applications}
+        handleCreate={() => handleCreate('applications')}
+        handleUpdate={(id) => handleUpdate('applications', id)}
+        handleDelete={(id) => handleDelete('applications', id)}
+      />
+
+      {/* COMPANIES TABLE */}
+      <Table
+        title="Companies"
+        data={companies}
+        handleCreate={() => handleCreate('companies')}
+        handleUpdate={(id) => handleUpdate('companies', id)}
+        handleDelete={(id) => handleDelete('companies', id)}
+      />
+
+      {/* Pagination Controls */}
+      <div className="pagination-controls">
+        <button onClick={() => setPage(page - 1)} disabled={page <= 1}>
+          Previous
+        </button>
+        <button onClick={() => setPage(page + 1)}>
+          Next
+        </button>
       </div>
 
-      {/* Data Table */}
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            {records.length > 0 && Object.keys(records[0]).map((key, index) => (
-              <th key={index}>{key}</th>
-            ))}
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {renderTableRows()}
-        </tbody>
-      </Table>
-
-      {/* Pagination */}
-      <Pagination>
-        <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
-        {[...Array(totalPages).keys()].map(num => (
-          <Pagination.Item key={num + 1} active={num + 1 === currentPage} onClick={() => handlePageChange(num + 1)}>
-            {num + 1}
-          </Pagination.Item>
-        ))}
-        <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
-      </Pagination>
-
-      {/* Create Button */}
-      <Button variant="warning" onClick={() => { setModalType('create'); setShowModal(true); }}>
-        Create New {activeTable.charAt(0).toUpperCase() + activeTable.slice(1)}
-      </Button>
-
-      {/* Modal for Create/Update */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>{modalType === 'create' ? 'Create' : 'Update'} {activeTable.charAt(0).toUpperCase() + activeTable.slice(1)}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            {Object.keys(records[0] || {}).map((key, index) => (
-              <Form.Group key={index}>
-                <Form.Label>{key}</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={formData[key] || ''}
-                  onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                />
-              </Form.Group>
-            ))}
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Close</Button>
-          <Button variant="primary" onClick={handleCreateUpdate}>
-            {modalType === 'create' ? 'Create' : 'Update'}
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Form Modal */}
+      <Wizard
+        show={showForm}
+        handleClose={() => setShowForm(false)}
+        handleSubmit={handleSubmit}
+        initialData={editData}
+        fields={fields}
+      />
     </div>
   );
 };
 
-export default Modify;
+// Reusable Table Component
+const Table = ({ title, data, handleCreate, handleUpdate, handleDelete }) => (
+  <div>
+    <h2>{title}</h2>
+    <button onClick={handleCreate} className="btn btn-warning">Create New</button>
+    <table className="table">
+      <thead>
+        <tr>
+          {data.length > 0 && Object.keys(data[0]).map((key) => (
+            <th key={key}>{key}</th>
+          ))}
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((record) => (
+          <tr key={record.id}>
+            {Object.values(record).map((value, i) => (
+              <td key={i}>
+                {/* If value is an object, stringify it or display specific properties */}
+                {typeof value === 'object' && value !== null
+                  ? JSON.stringify(value) // Handle object (you can customize this to display specific properties)
+                  : value}
+              </td>
+            ))}
+            <td>
+              <button className="btn btn-warning" onClick={() => handleUpdate(record.id)}>Update</button>
+              <button className="btn btn-warning" onClick={() => handleDelete(record.id)}>Delete</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 
+export default Modify;
