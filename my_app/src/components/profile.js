@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
+// import Logout from './components/logout';
 
 
 function Profile({language }) {
@@ -129,13 +130,13 @@ function Profile({language }) {
             />
           </Form.Group>
 
-          <Button type="submit" className="btn btn-primary">
+          <Button type="submit" className="btn btn-warning">
             {isEditing ? 'Update' : '/users_update/{id}'}
           </Button>
         </Form>
           {/* Log Out Button */}
-          {/* <button className="btn btn-danger" onClick={Logout}>
-              {language === 'EN' ? 'Log Out' : 'Déconnexion'}
+          {/* <button className="btn btn-warning" onClick={Logout}>
+            {language === 'EN' ? 'Log Out' : 'Déconnexion'}
           </button> */}
       </Container>
     </>

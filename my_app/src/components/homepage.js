@@ -61,7 +61,7 @@ function HomePage({ darkMode, language }) {
       <button className="btn btn-pale-orange"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
     </Link> 
     <Link to="/suggestions" className="ms-3"> 
-      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions / Ideas' : 'Suggestions / Idées'} </button>
+      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
     </Link>
       {/* Search Bar and Filters */}
       <div className="container my-4">

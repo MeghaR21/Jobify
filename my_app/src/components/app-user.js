@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } f
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './myaxios';
 import JobAdvertUser from './jobadvertuser';
+// import LogoutButton from './logout';
 
 function AppUserPage() {
   const [jobAds, setJobAds] = useState([]);
@@ -67,10 +68,10 @@ function AppUserPage() {
   return (
     <>
     <Link to="/profile"> 
-      <button className="btn btn-pale-orange"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
+      <button className="btn btn-pale-orange"> {language === 'EN' ? 'Profils' : 'Profile'} </button> 
     </Link>
     <Link to="/suggestions" className="ms-3">
-      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions / Ideas' : 'Suggestions / Idées'} </button>
+      <button className="btn btn-secondary"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
     </Link>
       {localStorage.getItem('token') && (
         <>
@@ -180,9 +181,7 @@ function AppUserPage() {
           </div>
 
           {/* Log Out Button */}
-          <button className="btn btn-danger" onClick={handleLogout}>
-            {language === 'EN' ? 'Log Out' : 'Déconnexion'}
-          </button>
+         {/* <LogoutButton {language === 'EN' ? 'Log Out' : 'Déconnexion'}/> */}
         </>
       )}
     </>

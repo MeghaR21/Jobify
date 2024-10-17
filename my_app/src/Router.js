@@ -12,7 +12,7 @@ import AppUserPage from './components/app-user';
 import JobAdvert from './components/jobadvert'
 import JobAdvertUser from './components/jobadvertuser';
 import Profile from './components/profile';
-import Logout from './components/logout';
+import LogoutButton from './components/logout';
 
 
 function AppRouter() {
@@ -90,7 +90,7 @@ function AppRouter() {
           <Route path="/jobadvert" element={<JobAdvert/>}/>
           <Route path="/jobadvertuser" element={<JobAdvertUser/>}/>
           <Route path="/profile" element={<Profile/>}/>
-          <Route path="/logout" element={<Logout/>}/>
+          <Route path="/logout" element={<LogoutButton/>}/>
 
           {/* Suggestions Route */}
           <Route path="/suggestions"

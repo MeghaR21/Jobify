@@ -1,11 +1,10 @@
-import React, { useState } from 'react'; // Import useState
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // Added useEffect
+import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from 'react-router-dom'; // Added useParams and useNavigate
 import { instance } from './myaxios';
 import LoginPage from './login';
 import AdminDashboard from './admin-dashboard';
 
-
-const JobAdForm = () => {
+const JobAdForm = ({ mode = 'create' }) => {
   const [formData, setFormData] = useState({
     title: '',
     companyName: '',
@@ -15,6 +14,22 @@ const JobAdForm = () => {
     contractType: '',
   });
 
+  const { id } = useParams(); // Get the ad ID from the URL (useParams)
+  const navigate = useNavigate(); // For programmatic navigation
+
+  // If the form is in 'update' mode, fetch the advertisement's details
+  useEffect(() => {
+    if (mode === 'update' && id) {
+      instance.get(`/advertisements/${id}`)
+        .then(response => {
+          setFormData(response.data); // Prepopulate the form with the ad data
+        })
+        .catch(error => {
+          console.error('Error fetching the advertisement data!', error);
+        });
+    }
+  }, [mode, id]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -22,29 +37,52 @@ const JobAdForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Post the form data to the API
-    instance.post('/advertisements_create', formData)
-      .then(response => {
-        alert('Job ad created successfully!');
-        // Clear the form after successful submission
-        setFormData({
-          title: '',
-          companyName: '',
-          description: '',
-          salary: '',
-          location: '',
-          contractType: '',
+    
+    // Determine if we are creating or updating
+    if (mode === 'create') {
+      instance.post('/advertisements_create', formData)
+        .then(response => {
+          alert('Job ad created successfully!');
+          setFormData({
+            title: '',
+            companyName: '',
+            description: '',
+            salary: '',
+            location: '',
+            contractType: '',
+          });
+        })
+        .catch(error => {
+          console.error('Error creating the job ad!', error);
         });
-      })
-      .catch(error => {
-        console.error('There was an error creating the job ad!', error);
-      });
+    } else if (mode === 'update') {
+      instance.put(`/advertisements_update/${id}`, formData)
+        .then(response => {
+          alert('Job ad updated successfully!');
+          navigate('/admin-dashboard'); // Redirect to the dashboard after successful update
+        })
+        .catch(error => {
+          console.error('Error updating the job ad!', error);
+        });
+    }
+  };
+
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this advertisement?')) {
+      instance.delete(`/advertisements_delete/${id}`)
+        .then(response => {
+          alert('Job ad deleted successfully!');
+          navigate('/admin-dashboard'); // Redirect to the dashboard after successful deletion
+        })
+        .catch(error => {
+          console.error('Error deleting the job ad!', error);
+        });
+    }
   };
 
   return (
     <div className="container my-5">
-      <h2>Create a New Job Ad</h2>
+      <h2>{mode === 'create' ? 'Create a New Job Ad' : 'Update Job Ad'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="title" className="form-label">Job Title</label>
@@ -73,7 +111,7 @@ const JobAdForm = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="description" className="form-label">Job Description</label>
+          <label htmlFor="description" className="form-label">Description</label>
           <textarea
             className="form-control"
             id="description"
@@ -124,7 +162,19 @@ const JobAdForm = () => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">Create Job Ad</button>
+        <button type="submit" className="btn btn-primary">
+          {mode === 'create' ? 'Create Job Ad' : 'Update Job Ad'}
+        </button>
+
+        {mode === 'update' && (
+          <button
+            type="button"
+            className="btn btn-danger ms-3"
+            onClick={handleDelete}
+          >
+            Delete Job Ad
+          </button>
+        )}
       </form>
     </div>
   );
