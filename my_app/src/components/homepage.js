@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 
 function HomePage({ darkMode, language }) {
   const [jobAds, setJobAds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // For search engine
+  // const [searchTerm, setSearchTerm] = useState(''); // For search engine
   const [filters, setFilters] = useState({
     title: '',
     company: '',
@@ -31,10 +31,10 @@ function HomePage({ darkMode, language }) {
       });
   };
   
-  // Handle search input changes
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  // // Handle search input changes
+  // const handleSearchChange = (e) => {
+  //   setSearchTerm(e.target.value.toLowerCase());
+  // };
 
   // Handle filter changes
   const handleFilterChange = (e) => {
@@ -44,14 +44,14 @@ function HomePage({ darkMode, language }) {
 
   // Filtered and searched job ads
   const filteredJobAds = jobAds.filter(ad => {
-    const matchesSearchTerm = ad.description.toLowerCase().includes(searchTerm);
-    const matchesTitle = filters.title ? ad.title.toLowerCase().includes(filters.title.toLowerCase()) : true;
-    const matchesCompany = filters.company ? ad.company_name.toLowerCase().includes(filters.company.toLowerCase()) : true;
-    const matchesLocalization = filters.localization ? ad.place.toLowerCase().includes(filters.localization.toLowerCase()) : true;
-    const matchesSalary = filters.salary ? ad.salary >= filters.salary : true;
+    // const matchesSearchTerm = filters.searchTerm ? ad.description.toLowerCase().includes(searchTerm.toLowerCase().trim()):true;
+    const matchesTitle = filters.title ? ad.job_title.toLowerCase().includes(filters.title.toLowerCase().trim()) : true;
+    const matchesCompany = filters.company ? ad.company.name.toLowerCase().includes(filters.company.toLowerCase().trim()) : true;
+    const matchesLocalization = filters.localization ? ad.location.toLowerCase().includes(filters.localization.toLowerCase().trim()) : true;
+    const matchesSalary = filters.salary ? parseFloat(ad.salary) >= parseFloat(filters.salary) : true;
     const matchesDate = filters.date ? new Date(ad.creation_date) >= new Date(filters.date) : true;
 
-    return matchesSearchTerm && matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
+    return matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
   });
 
   return (
@@ -66,7 +66,7 @@ function HomePage({ darkMode, language }) {
       {/* Search Bar and Filters */}
       <div className="container my-4">
         <div className="row">
-          <div className="col-md-4">
+          {/* <div className="col-md-4">
             <input
               type="text"
               placeholder={language === 'EN' ? 'Search in job description...' : 'Recherchez dans la description...'}
@@ -74,9 +74,9 @@ function HomePage({ darkMode, language }) {
               value={searchTerm}
               onChange={handleSearchChange}
             />
-          </div>
+          </div> */}
 
-          <div className="col-md-2">
+          <div className="col-md-3">
             <input
               type="text"
               placeholder={language === 'EN' ? 'Filter by title' : 'Filtrer par titre'}
@@ -87,7 +87,7 @@ function HomePage({ darkMode, language }) {
             />
           </div>
 
-          <div className="col-md-2">
+          <div className="col-md-3">
             <input
               type="text"
               placeholder={language === 'EN' ? 'Filter by company' : 'Filtrer par entreprise'}
@@ -109,7 +109,7 @@ function HomePage({ darkMode, language }) {
             />
           </div>
 
-          <div className="col-md-1">
+          <div className="col-md-2">
             <input
               type="number"
               placeholder={language === 'EN' ? 'Salary' : 'Salaire'}
@@ -120,7 +120,7 @@ function HomePage({ darkMode, language }) {
             />
           </div>
 
-          <div className="col-md-1">
+          <div className="col-md-2">
             <input
               type="date"
               className="form-control"
@@ -141,13 +141,14 @@ function HomePage({ darkMode, language }) {
               <div key={ad.id} className="col-md-4 mb-4">
                 <JobAdvert
                   title={ad.job_title}
-                  companyName={ad.company_id} //ad.company.name
+                  companyName={ad.company.name} //ad.company.name
                   place={ad.location}
                   salary={ad.salary}
                   contractType={ad.contract_type}
                   description={ad.description}
                   fullDescription={ad.full_description}
                   creationDate={new Date(ad.created_at).toLocaleDateString()}
+                  advertisementId={ad.id} // Pass the advertisement ID here
                 />
               </div>
             ))

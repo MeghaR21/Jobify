@@ -10,28 +10,25 @@ function JobAdvertUser({
   description, 
   fullDescription, 
   creationDate,
-  userInfo // Assume this prop contains user information
+  advertisementId,
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
     message: ''
   });
-
-  useEffect(() => {
-    // Pre-fill form data with user information if available
-    if (userInfo) {
-      setFormData({
-        name: userInfo.name || '',
-        email: userInfo.email || '',
-        phone: userInfo.phone || '',
-        message: ''
-      });
-    }
-  }, [userInfo]);
+  const userId = localStorage.getItem('user_id');
+  // useEffect(() => {
+  //   // Pre-fill form data with user information if available
+  //   if (userInfo) {
+  //     setFormData({
+  //       name: userInfo.name || '',
+  //       email: userInfo.email || '',
+  //       phone: userInfo.phone || '',
+  //       message: ''
+  //     });
+  //   }
+  // }, [userInfo]);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -43,7 +40,7 @@ function JobAdvertUser({
 
   const handleCloseForm = () => {
     setIsApplying(false);
-    setFormData({ name: '', email: '', phone: '', message: '' }); // Reset form
+    setFormData({ message: '' }); // Reset form
   };
 
   const handleFormChange = (e) => {
@@ -57,34 +54,22 @@ function JobAdvertUser({
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const applicationData = {
+      user_id: userId, // Add the user ID here
+      message: formData.message,       // Message de l'utilisateur
+      advertisement_id: advertisementId // Add the advertisement ID here
+      // Si tu as besoin d'envoyer d'autres informations comme `advertisement_id`, tu peux les ajouter ici
+    };
 
-    if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address');
-      return;
-    }
-
-    fetch('/api/apply', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...formData,
-        jobTitle: title,
-        companyName: companyName,
-      }),
+    instance.post('/applications_create_registered',applicationData)
+    .then(response => 
+      {alert('Application submitted successfully!');
+      handleCloseForm(); // Reset and close form after submission
     })
-      .then(response => response.json())
-      .then(data => {
-        alert('Application submitted successfully!');
-        handleCloseForm(); // Reset and close form after submission
-      })
-      .catch(error => {
-        console.error('Error submitting application:', error);
-      });
+    .catch(error => {
+      console.error('Error submitting application:', error);
+    });
   };
-
   return (
     <div className="card h-100 shadow-sm">
       <div className="card-body">
@@ -102,7 +87,7 @@ function JobAdvertUser({
           </div>
         )}
 
-        <button className="btn btn-learn-more btn-pastel-orange me-3" onClick={handleToggle}>
+        <button className="btn btn-warning me-3" onClick={handleToggle}>
           {isExpanded ? 'Show Less' : 'Learn More'}
         </button>
         <button className="btn btn-warning text-dark" onClick={handleApplyClick}>
@@ -122,7 +107,7 @@ function JobAdvertUser({
               />
             </div>
             <button type="submit" className="btn btn-warning text-dark me-2">
-              Apply
+             Submit
             </button>
             <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
               Close

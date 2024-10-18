@@ -43,6 +43,10 @@ class LoginPage extends Component {
     instance.post("/login", { email, password })
       .then(response => {
         localStorage.setItem('token', response.data.access_token); // Store token
+        localStorage.setItem('user_id', response.data.user.id); // Store user ID
+        
+
+      
 
         // Check user role
         const userRole = response.data.user.role; // Adjust based on your API response structure
@@ -70,7 +74,17 @@ class LoginPage extends Component {
       return;
     }
 
-    instance.post('/register', signUpData)
+    // Prepare data with the correct key names
+    const signUpPayload = {
+      first_name: signUpData.firstName,
+      last_name: signUpData.lastName,
+      phone: signUpData.phone,
+      email: signUpData.email,
+      password: signUpData.password,
+      password_confirmation: signUpData.confirmPassword // Laravel expects 'password_confirmation'
+    };
+
+    instance.post('/register', signUpPayload)
       .then(() => {
         alert('Registration successful! Please log in.');
         this.setState({ showSignUp: false }); // Hide Sign-Up form after successful registration
@@ -190,23 +204,11 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                {/* <Form.Group controlId="formSignUpMessage" className="mt-3">
-                  <Form.Label>Message (to apply to company)</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter text"
-                    name="message"
-                    value={signUpData.message}
-                    onChange={this.handleSignUpChange}
-                    required
-                  />
-                </Form.Group> */}
-
                 <Form.Group controlId="formSignUpPassword" className="mt-3">
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label>Password </Form.Label>
                   <Form.Control
                     type="password"
-                    placeholder="Enter password"
+                    placeholder="Enter password (char.8 min)"
                     name="password"
                     value={signUpData.password}
                     onChange={this.handleSignUpChange}
@@ -218,7 +220,7 @@ class LoginPage extends Component {
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
                     type="password"
-                    placeholder="Confirm password"
+                    placeholder="Confirm password (char.8 min)"
                     name="confirmPassword"
                     value={signUpData.confirmPassword}
                     onChange={this.handleSignUpChange}

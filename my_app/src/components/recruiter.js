@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
-import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from 'react-router-dom'; // Added useParams and useNavigate
+import React, { useState, useEffect } from 'react'; 
+import { BrowserRouter as Button, useParams, useNavigate } from 'react-router-dom'; // Added useParams and useNavigate
 import { instance } from './myaxios';
-import LoginPage from './login';
-import AdminDashboard from './admin-dashboard';
 
 const JobAdForm = ({ mode = 'create' }) => {
   const [formData, setFormData] = useState({
@@ -82,6 +80,10 @@ const JobAdForm = ({ mode = 'create' }) => {
 
   return (
     <div className="container my-5">
+        {/* Logout Button */}
+        <Button className="mt-3 btn btn-danger" onClick={handleLogout}>
+          Logout
+        </Button>
       <h2>{mode === 'create' ? 'Create a New Job Ad' : 'Update Job Ad'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

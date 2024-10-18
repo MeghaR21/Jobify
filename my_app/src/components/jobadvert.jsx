@@ -9,12 +9,14 @@ function JobAdvert({
   salary, // Fixed typo here
   description, 
   fullDescription, 
-  creationDate 
+  creationDate,
+  advertisementId // Receiving the advertisement ID here
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
     message: ''
@@ -30,7 +32,7 @@ function JobAdvert({
 
   const handleCloseForm = () => {
     setIsApplying(false);
-    setFormData({ name: '', email: '', phone: '', message: '' }); // Reset form
+    setFormData({  firstName: '', lastName: '', email: '', phone: '', message: '' }); // Reset form
   };
 
   const handleFormChange = (e) => {
@@ -51,24 +53,37 @@ function JobAdvert({
       return;
     }
 
-    instance.post('/applications_create', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...formData,
-        jobTitle: title,
-        companyName: companyName,
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
+      // Créer l'objet de données à envoyer
+    const applicationData = {
+      first_name: formData.firstName, // Prénom de l'utilisateur
+      last_name: formData.lastName,   // Nom de famille
+      email: formData.email,           // Email
+      phone: formData.phone,           // Numéro de téléphone
+      message: formData.message,       // Message de l'utilisateur
+      advertisement_id: advertisementId // Add the advertisement ID here
+      // Si tu as besoin d'envoyer d'autres informations comme `advertisement_id`, tu peux les ajouter ici
+    };
+
+    
+    instance.post('/applications_create_unregistered',applicationData)
+      .then(response => {
         alert('Application submitted successfully!');
         handleCloseForm(); // Reset and close form after submission
       })
       .catch(error => {
-        console.error('Error submitting application:', error);
-      });
+        if (error.response) {
+          // Server responded with a status code other than 2xx
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          console.error('Error response headers:', error.response.headers);
+        } else if (error.request) {
+          // Request was made but no response received
+          console.error('No response received:', error.request);
+        } else {
+          // Other error during setup
+          console.error('Error setting up request:', error.message);
+        }
+      })
   };
 
   return (
@@ -99,12 +114,23 @@ function JobAdvert({
           <form onSubmit={handleFormSubmit} className="mt-3">
             <h4 className="mb-3">Apply for {title}</h4>
             <div className="mb-3">
-              <label className="form-label">Name</label>
+              <label className="form-label">First name</label>
               <input
                 type="text"
                 className="form-control"
-                name="name"
-                value={formData.name}
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleFormChange}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Last name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="lastName"
+                value={formData.lastName}
                 onChange={handleFormChange}
                 required
               />

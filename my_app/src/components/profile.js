@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
-// import Logout from './components/logout';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-
-function Profile({language }) {
+function Profile({ language }) {
   const [first, setFirst] = useState('');
   const [last, setLast] = useState('');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
@@ -15,6 +13,8 @@ function Profile({language }) {
   const [message, setMessage] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
+  const [userId, setUserId] = useState(''); // Add userId state
+  const navigate = useNavigate(); //after logout
 
   useEffect(() => {
     // Check if the user is already logged in
@@ -25,11 +25,13 @@ function Profile({language }) {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          setFirst(response.data.firstName);
-          setLast(response.data.lastName);
-          setEmail(response.data.email);
-          setPhone(response.data.phone); // Fetch phone if it exists
-          setMessage(response.data.message);
+          const userData = response.data;
+          setFirst(userData.firstName);
+          setLast(userData.lastName);
+          setEmail(userData.email);
+          setPhone(userData.phone); 
+          setMessage(userData.message);
+          setUserId(userData.id); // Save the userId for future use
           setIsEditing(true);
         })
         .catch((error) => console.error('Error fetching user data:', error));
@@ -38,12 +40,20 @@ function Profile({language }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const payload = { first, last, email, password, phone, message };
 
-    if (isEditing) {
+    if (isEditing && userId) {
       // Update user information
+      const payload = {
+        first_name: first,
+        last_name: last,
+        phone: phone,
+        email: email,
+        password: password || undefined, // Include password only if it's being changed
+        password_confirmation: passwordConfirm || undefined, // Include password confirmation if password is being changed
+      };
+
       instance
-        .put('/users_update/{id}', payload, {
+        .put(`/users_update/${userId}`, payload, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         .then(() => alert('Account updated successfully'))
@@ -51,9 +61,19 @@ function Profile({language }) {
     }
   };
 
+  const handleLogout = () => {
+    // Implement your logout logic here
+    localStorage.removeItem('token');
+    navigate('/'); // Redirect to login page
+  };
+
   return (
     <>
       <Container>
+        {/* Logout Button */}
+        <Button className="mt-3 btn btn-warning" onClick={handleLogout}>
+          Logout
+        </Button>
         <h2 className="mt-4">Profile</h2>
         <h4>{isEditing ? 'Modify Account' : 'Register'}</h4>
         {error && <Alert variant="danger">{error}</Alert>}
@@ -121,13 +141,9 @@ function Profile({language }) {
           </Form.Group>
 
           <Button type="submit" className="btn btn-warning">
-            {isEditing ? 'Update' : '/users_update/{id}'}
+            {isEditing ? 'Update' : 'Register'}
           </Button>
         </Form>
-          {/* Log Out Button */}
-          {/* <button className="btn btn-warning" onClick={Logout}>
-            {language === 'EN' ? 'Log Out' : 'Déconnexion'}
-          </button> */}
       </Container>
     </>
   );
