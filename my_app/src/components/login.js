@@ -138,7 +138,7 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-4">
+                <Button variant="warning" type="submit" className="mt-4">
                   Login
                 </Button>
               </Form>
@@ -228,7 +228,7 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-4">
+                <Button variant="warning" type="submit" className="mt-4">
                   Validate
                 </Button>
               </Form>

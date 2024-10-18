@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {Button} from 'react-bootstrap';
-import { instance } from './myaxios'; 
-import Wizard from './wizard.js'; 
+import { Button } from 'react-bootstrap';
+import { instance } from './myaxios';
+import Wizard from './wizard.js';
+import { useNavigate } from 'react-router-dom'; // For navigation after logout
 
 const Modify = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -11,11 +12,12 @@ const Modify = () => {
   const [applications, setApplications] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [editData, setEditData] = useState(null);  // Track data being edited
+  const [editData, setEditData] = useState(null); // Track data being edited
   const [formTable, setFormTable] = useState(null);
-  const [fields, setFields] = useState([]); // Which table we're editing
+  const [fields, setFields] = useState([]); // Fields for the form
   const [page, setPage] = useState(1); // For pagination
   const itemsPerPage = 5;
+  const navigate = useNavigate(); // To redirect after logout
 
   // Check if user is authenticated and fetch data
   useEffect(() => {
@@ -30,14 +32,8 @@ const Modify = () => {
       });
   }, [page]);
 
-  // // Handle Logout function
-  // const handleLogout = () => {
-  //   localStorage.removeItem('token'); // Clear the token on logout
-  //   setIsAdmin(false); // Reset admin state
-  //   navigate('/'); // Redirect to login page
-  // };
-
   const fetchData = () => {
+    // Fetch all data (users, advertisements, applications, companies)
     instance.get(`/users_list?page=${page}&limit=${itemsPerPage}`)
       .then(response => setUsers(response.data))
       .catch(err => console.error(err));
@@ -55,19 +51,32 @@ const Modify = () => {
       .catch(err => console.error(err));
   };
 
+  const handleLogout = () => {
+    instance.post('/logout')
+      .then(() => {
+        localStorage.removeItem('token'); // Remove the token from local storage
+        setAuthenticated(false);
+        navigate('/'); // Redirect to login page after successful logout
+      })
+      .catch(err => {
+        console.error('Logout failed', err);
+        alert('Failed to log out.');
+      });
+  };
+
   const handleCreate = (table) => {
-    setEditData(null);  // No initial data (new record)
+    setEditData(null); // No initial data (new record)
     setFormTable(table);
-    setFields(getFieldsForTable(table)); 
-    setShowForm(true);  // Show the form modal
+    setFields(getFieldsForTable(table));
+    setShowForm(true); // Show the form modal
   };
 
   const handleUpdate = (table, id) => {
     const record = getRecordById(table, id);
-    setEditData(record);  // Set data to be edited
+    setEditData(record); // Set data to be edited
     setFormTable(table);
-    setFields(getFieldsForTable(table)); 
-    setShowForm(true);  // Show the form modal
+    setFields(getFieldsForTable(table));
+    setShowForm(true); // Show the form modal
   };
 
   const handleDelete = (table, id) => {
@@ -84,20 +93,19 @@ const Modify = () => {
   const getFieldsForTable = (table) => {
     switch (table) {
       case 'users':
-        return ['id', 'first_name', 'last_name', 'phone', 'email', 'role', 'company_id', 'created_at', 'updated_at'];
+        return ['first_name', 'last_name', 'phone', 'email', 'role', 'company_id'];
       case 'advertisements':
-        return ['id', 'title', 'description', 'company_id', 'created_at', 'updated_at'];
+        return ['job_title',	'location',	'salary',	'contract_type',	'description',	'full_description', 'company_id'];
       case 'applications':
-        return ['id', 'message', 'user_id', 'advertisement_id', 'created_at', 'updated_at'];
+        return ['message', 'user_id', 'advertisement_id'];
       case 'companies':
-        return ['id', 'name', 'email', 'address', 'website', 'created_at', 'updated_at'];
+        return ['name', 'email', 'address', 'website'];
       default:
         return [];
     }
   };
-  
+
   const getRecordById = (table, id) => {
-    // Function to get the correct record by ID
     switch (table) {
       case 'users':
         return users.find(u => u.id === id);
@@ -115,6 +123,7 @@ const Modify = () => {
   const handleSubmit = (formData) => {
     const endpoint = formTable === 'users' ? '/users_create' : `/${formTable}_create`;
     if (editData) {
+      // If updating an existing record
       instance.put(`/${formTable}_update/${editData.id}`, formData)
         .then(() => {
           alert('Record updated successfully!');
@@ -122,6 +131,7 @@ const Modify = () => {
         })
         .catch(err => console.error(err));
     } else {
+      // If creating a new record
       instance.post(endpoint, formData)
         .then(() => {
           alert('Record created successfully!');
@@ -129,6 +139,7 @@ const Modify = () => {
         })
         .catch(err => console.error(err));
     }
+    setShowForm(false); // Close the modal after form submission
   };
 
   if (!authenticated) {
@@ -137,9 +148,12 @@ const Modify = () => {
 
   return (
     <div>
-      {/* <button onClick={handleLogout}>{language === 'EN' ? 'Logout' : 'Déconnexion'} </button> */}
-      <h1>Admin Dashboard</h1>
+      {/* Logout Button */}
+      <Button onClick={handleLogout} className="btn btn-warning">
+        Logout
+      </Button>
 
+      <h1>Admin Dashboard</h1>
       {/* USERS TABLE */}
       <Table
         title="Users"
@@ -178,21 +192,22 @@ const Modify = () => {
 
       {/* Pagination Controls */}
       <div className="pagination-controls">
-        <button onClick={() => setPage(page - 1)} disabled={page <= 1}>
+        <Button onClick={() => setPage(page - 1)} disabled={page <= 1} className="btn btn-warning">
           Previous
-        </button>
-        <button onClick={() => setPage(page + 1)}>
+        </Button>
+        <Button onClick={() => setPage(page + 1)} className="btn btn-warning">
           Next
-        </button>
+        </Button>
       </div>
 
-      {/* Form Modal */}
+      {/* Form Modal for Creating or Editing */}
       <Wizard
         show={showForm}
         handleClose={() => setShowForm(false)}
         handleSubmit={handleSubmit}
         initialData={editData}
         fields={fields}
+        resource={formTable}  // Pass the resource name (users, advertisements, etc.)
       />
     </div>
   );
@@ -202,7 +217,7 @@ const Modify = () => {
 const Table = ({ title, data, handleCreate, handleUpdate, handleDelete }) => (
   <div>
     <h2>{title}</h2>
-    <button onClick={handleCreate} className="btn btn-warning">Create New</button>
+    <Button onClick={handleCreate} className="btn btn-warning">Create New</Button>
     <table className="table">
       <thead>
         <tr>
@@ -217,15 +232,15 @@ const Table = ({ title, data, handleCreate, handleUpdate, handleDelete }) => (
           <tr key={record.id}>
             {Object.values(record).map((value, i) => (
               <td key={i}>
-                {/* If value is an object, stringify it or display specific properties */}
+                {/* Handle object values or display normally */}
                 {typeof value === 'object' && value !== null
-                  ? JSON.stringify(value) // Handle object (you can customize this to display specific properties)
+                  ? JSON.stringify(value)
                   : value}
               </td>
             ))}
             <td>
-              <button className="btn btn-warning" onClick={() => handleUpdate(record.id)}>Update</button>
-              <button className="btn btn-warning" onClick={() => handleDelete(record.id)}>Delete</button>
+              <Button className="btn btn-warning me-3" onClick={() => handleUpdate(record.id)}>Update</Button>
+              <Button className="btn btn-warning me-3" onClick={() => handleDelete(record.id)}>Delete</Button>
             </td>
           </tr>
         ))}
