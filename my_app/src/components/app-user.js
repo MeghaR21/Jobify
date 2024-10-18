@@ -8,7 +8,7 @@ import JobAdvertUser from './jobadvertuser';
 function AppUserPage() {
   const [jobAds, setJobAds] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false); // Dynamic admin status
-  const [searchTerm, setSearchTerm] = useState(''); // For search functionality
+  // const [searchTerm, setSearchTerm] = useState(''); // For search functionality
   const [filters, setFilters] = useState({
     title: '',
     company: '',
@@ -35,10 +35,10 @@ function AppUserPage() {
       });
   };
 
-  // Handle search input changes
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value.toLowerCase());
-  };
+  // // Handle search input changes
+  // const handleSearchChange = (e) => {
+  //   setSearchTerm(e.target.value.toLowerCase());
+  // };
 
   // Handle filter changes
   const handleFilterChange = (e) => {
@@ -55,28 +55,23 @@ function AppUserPage() {
 
   // Filtered and searched job ads
   const filteredJobAds = jobAds.filter(ad => {
-    const matchesSearchTerm = ad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false;
-    const matchesTitle = filters.title ? ad.title?.toLowerCase().includes(filters.title?.toLowerCase() || '') : true;
-    const matchesCompany = filters.company ? ad.company_name?.toLowerCase().includes(filters.company?.toLowerCase() || '') : true;
-    const matchesLocalization = filters.localization ? ad.place?.toLowerCase().includes(filters.localization?.toLowerCase() || '') : true;
-    const matchesSalary = filters.salary ? (ad.salary >= filters.salary) : true;
-    const matchesDate = filters.date ? (new Date(ad.creation_date) >= new Date(filters.date)) : true;
+    // const matchesSearchTerm = filters.searchTerm ? ad.description.toLowerCase().includes(searchTerm.toLowerCase().trim()):true;
+    const matchesTitle = filters.title ? ad.job_title.toLowerCase().includes(filters.title.toLowerCase().trim()) : true;
+    const matchesCompany = filters.company ? ad.company.name.toLowerCase().includes(filters.company.toLowerCase().trim()) : true;
+    const matchesLocalization = filters.localization ? ad.location.toLowerCase().includes(filters.localization.toLowerCase().trim()) : true;
+    const matchesSalary = filters.salary ? parseFloat(ad.salary) >= parseFloat(filters.salary) : true;
+    const matchesDate = filters.date ? new Date(ad.creation_date) >= new Date(filters.date) : true;
 
-    console.log(`Ad: ${ad.title}, matchesSearchTerm: ${matchesSearchTerm}, matchesTitle: ${matchesTitle}, matchesCompany: ${matchesCompany}, matchesLocalization: ${matchesLocalization}, matchesSalary: ${matchesSalary}, matchesDate: ${matchesDate}`);
-  
-    return matchesSearchTerm && matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
+    return matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
   });
 
   return (
     <>
     {/* Logout Button */}
-    <Button className="mt-3 btn btn-warning" onClick={handleLogout}>
-      Logout
-    </Button>
     <Link to="/profile">  
-      <button className="btn btn-pale-orange"> {language === 'EN' ? 'My Profils' : 'Mon Profile'} </button> 
+      <button className="btn btn-pale-orange"> {language === 'EN' ? 'My Profile' : 'Mon Profil'} </button> 
     </Link>
-    <button onClick={handleLogout}>Logout {language === 'EN' ? 'Log Out' : 'Déconnexion'} </button>
+    <button onClick={handleLogout}>{language === 'EN' ? 'Logout' : 'Déconnexion'} </button>
     <Link to="/suggestions" className="ms-3">
       <button className="btn btn-warning"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
     </Link>
@@ -85,7 +80,7 @@ function AppUserPage() {
           {/* Search Bar and Filters */}
           <div className="container my-4">
             <div className="row">
-              <div className="col-md-4">
+              {/* <div className="col-md-4">
                 <input
                   type="text"
                   placeholder={
@@ -97,9 +92,9 @@ function AppUserPage() {
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
-              </div>
+              </div> */}
 
-              <div className="col-md-2">
+              <div className="col-md-3">
                 <input
                   type="text"
                   placeholder={language === 'EN' ? 'Filter by title' : 'Filtrer par titre'}
@@ -110,7 +105,7 @@ function AppUserPage() {
                 />
               </div>
 
-              <div className="col-md-2">
+              <div className="col-md-3">
                 <input
                   type="text"
                   placeholder={language === 'EN' ? 'Filter by company' : 'Filtrer par entreprise'}
@@ -134,7 +129,7 @@ function AppUserPage() {
                 />
               </div>
 
-              <div className="col-md-1">
+              <div className="col-md-2">
                 <input
                   type="number"
                   placeholder={language === 'EN' ? 'Salary' : 'Salaire'}
@@ -145,7 +140,7 @@ function AppUserPage() {
                 />
               </div>
 
-              <div className="col-md-1">
+              <div className="col-md-2">
                 <input
                   type="date"
                   className="form-control"
@@ -172,6 +167,7 @@ function AppUserPage() {
                       description={ad.description}
                       fullDescription={ad.full_description}
                       creationDate={new Date(ad.created_at).toLocaleDateString()}
+                      advertisementId={ad.id} // get the ad id 
                     />
                   </div>
                 ))
