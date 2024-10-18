@@ -102,7 +102,7 @@ function JobAdvertUser({
           </div>
         )}
 
-        <button className="btn btn-learn-more btn-pastel-orange me-3" onClick={handleToggle}>
+        <button className="btn btn-warning me-3" onClick={handleToggle}>
           {isExpanded ? 'Show Less' : 'Learn More'}
         </button>
         <button className="btn btn-warning text-dark" onClick={handleApplyClick}>

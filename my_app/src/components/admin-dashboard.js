@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { instance } from './myaxios';  // Import your axios instance
-import Wizard from './wizard.js';  // Import the RecordForm component
+import {Button} from 'react-bootstrap';
+import { instance } from './myaxios'; 
+import Wizard from './wizard.js'; 
 
 const Modify = () => {
   const [authenticated, setAuthenticated] = useState(false);

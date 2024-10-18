@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
-import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from 'react-router-dom'; // Added useParams and useNavigate
+import React, { useState, useEffect } from 'react'; 
+import { BrowserRouter as Button, useParams, useNavigate } from 'react-router-dom'; // Added useParams and useNavigate
 import { instance } from './myaxios';
-import LoginPage from './login';
-import AdminDashboard from './admin-dashboard';
 
 const JobAdForm = ({ mode = 'create' }) => {
   const [formData, setFormData] = useState({

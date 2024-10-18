@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Button, Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './myaxios';
 import JobAdvertUser from './jobadvertuser';
@@ -54,14 +54,16 @@ function AppUserPage() {
   };
 
   // Filtered and searched job ads
-  const filteredJobAds = jobAds.filter((ad) => {
-    const matchesSearchTerm = ad.description.toLowerCase().includes(searchTerm);
-    const matchesTitle = filters.title ? ad.title.toLowerCase().includes(filters.title.toLowerCase()) : true;
-    const matchesCompany = filters.company ? ad.company_name.toLowerCase().includes(filters.company.toLowerCase()) : true;
-    const matchesLocalization = filters.localization ? ad.place.toLowerCase().includes(filters.localization.toLowerCase()) : true;
-    const matchesSalary = filters.salary ? ad.salary >= filters.salary : true;
-    const matchesDate = filters.date ? new Date(ad.creation_date) >= new Date(filters.date) : true;
+  const filteredJobAds = jobAds.filter(ad => {
+    const matchesSearchTerm = ad.description?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false;
+    const matchesTitle = filters.title ? ad.title?.toLowerCase().includes(filters.title?.toLowerCase() || '') : true;
+    const matchesCompany = filters.company ? ad.company_name?.toLowerCase().includes(filters.company?.toLowerCase() || '') : true;
+    const matchesLocalization = filters.localization ? ad.place?.toLowerCase().includes(filters.localization?.toLowerCase() || '') : true;
+    const matchesSalary = filters.salary ? (ad.salary >= filters.salary) : true;
+    const matchesDate = filters.date ? (new Date(ad.creation_date) >= new Date(filters.date)) : true;
 
+    console.log(`Ad: ${ad.title}, matchesSearchTerm: ${matchesSearchTerm}, matchesTitle: ${matchesTitle}, matchesCompany: ${matchesCompany}, matchesLocalization: ${matchesLocalization}, matchesSalary: ${matchesSalary}, matchesDate: ${matchesDate}`);
+  
     return matchesSearchTerm && matchesTitle && matchesCompany && matchesLocalization && matchesSalary && matchesDate;
   });
 
