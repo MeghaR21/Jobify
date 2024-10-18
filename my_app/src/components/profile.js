@@ -4,60 +4,67 @@ import { Form, Button, Container, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 function Profile({ language }) {
-  const [first, setFirst] = useState('');
-  const [last, setLast] = useState('');
+  const [firstName, setFirst] = useState('');
+  const [lastName, setLast] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [passwordConfirm, setPasswordConfirm] = useState('');
   const [phone, setPhone] = useState('');
-  const [message, setMessage] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState('');
-  const [userId, setUserId] = useState(''); // Add userId state
+  const [userId, setUserId] = useState(localStorage.getItem('user_id')); // Add userId state
   const navigate = useNavigate(); //after logout
 
   useEffect(() => {
-    // Check if the user is already logged in
-    const token = localStorage.getItem('token');
-    if (token) {
+    if (userId) {
       instance
-        .get('/user', {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        .get(`/users_show/${userId}`)  // Adjust API route to get user by ID
         .then((response) => {
           const userData = response.data;
-          setFirst(userData.firstName);
-          setLast(userData.lastName);
+          setFirst(userData.first_name);
+          setLast(userData.last_name);
           setEmail(userData.email);
-          setPhone(userData.phone); 
-          setMessage(userData.message);
-          setUserId(userData.id); // Save the userId for future use
-          setIsEditing(true);
+          setPhone(userData.phone);
+         
+     
         })
         .catch((error) => console.error('Error fetching user data:', error));
     }
-  }, []);
+  }, [userId]);
 
-  const handleSubmit = (e) => {
+  const handleProfileUpdate = (e) => {
     e.preventDefault();
 
-    if (isEditing && userId) {
-      // Update user information
-      const payload = {
-        first_name: first,
-        last_name: last,
-        phone: phone,
-        email: email,
-        password: password || undefined, // Include password only if it's being changed
-        password_confirmation: passwordConfirm || undefined, // Include password confirmation if password is being changed
-      };
+   
+    
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
+      phone: phone,
+      email: email,
+      password: password || undefined, // Include password only if it's being changed
+    };
 
+    instance
+    .put(`/users_update/${userId}`, payload)
+    .then(response => 
+      {alert('Application submitted successfully!');
+    })
+    .catch((error) => console.error('Error updating account:', error));
+    
+  };
+  
+  //Delete account for user registered
+
+  const handleDeleteAccount = () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
       instance
-        .put(`/users_update/${userId}`, payload, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        .delete(`/users_delete/${userId}`)
+        .then(() => {
+          localStorage.removeItem('user_id'); // Remove user_id from local storage
+          localStorage.removeItem('token');   // Remove token from local storage
+          alert('Account deleted successfully');
+          navigate('/'); // Redirect to home page
         })
-        .then(() => alert('Account updated successfully'))
-        .catch((error) => console.error('Error updating account:', error));
+        .catch((error) => console.error('Error deleting account:', error));
     }
   };
 
@@ -75,14 +82,14 @@ function Profile({ language }) {
           Logout
         </Button>
         <h2 className="mt-4">Profile</h2>
-        <h4>{isEditing ? 'Modify Account' : 'Register'}</h4>
+        <h4> Modify Account</h4>
         {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={handleProfileUpdate}>
           <Form.Group className="mb-3">
             <Form.Label>First Name</Form.Label>
             <Form.Control
               type="text"
-              value={first}
+              value={firstName}
               onChange={(e) => setFirst(e.target.value)}
               required
             />
@@ -92,7 +99,7 @@ function Profile({ language }) {
             <Form.Label>Last Name</Form.Label>
             <Form.Control
               type="text"
-              value={last}
+              value={lastName}
               onChange={(e) => setLast(e.target.value)}
               required
             />
@@ -114,21 +121,10 @@ function Profile({ language }) {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required={!isEditing}
+              placeholder="Leave blank if not changing"
+
             />
           </Form.Group>
-
-          {!isEditing && (
-            <Form.Group className="mb-3">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                value={passwordConfirm}
-                onChange={(e) => setPasswordConfirm(e.target.value)}
-                required
-              />
-            </Form.Group>
-          )}
 
           <Form.Group className="mb-3">
             <Form.Label>Phone</Form.Label>
@@ -140,8 +136,11 @@ function Profile({ language }) {
             />
           </Form.Group>
 
-          <Button type="submit" className="btn btn-warning">
-            {isEditing ? 'Update' : 'Register'}
+          <Button type="submit" className="btn btn-warning me-3">
+            Update
+          </Button>
+          <Button type="button" className="btn btn-warning me-3" onClick={handleDeleteAccount}>
+            Delete
           </Button>
         </Form>
       </Container>

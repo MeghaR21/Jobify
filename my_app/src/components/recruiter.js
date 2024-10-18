@@ -28,6 +28,12 @@ const JobAdForm = ({ mode = 'create' }) => {
     }
   }, [mode, id]);
 
+  // Handle Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Clear the token on logout
+    navigate('/'); // Redirect to login page
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -80,10 +86,7 @@ const JobAdForm = ({ mode = 'create' }) => {
 
   return (
     <div className="container my-5">
-        {/* Logout Button */}
-        <Button className="mt-3 btn btn-danger" onClick={handleLogout}>
-          Logout
-        </Button>
+       {/* <button onClick={handleLogout}>{language === 'EN' ? 'Logout' : 'Déconnexion'} </button> */}
       <h2>{mode === 'create' ? 'Create a New Job Ad' : 'Update Job Ad'}</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">

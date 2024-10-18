@@ -72,9 +72,6 @@ function AppUserPage() {
       <button className="btn btn-pale-orange"> {language === 'EN' ? 'My Profile' : 'Mon Profil'} </button> 
     </Link>
     <button onClick={handleLogout}>{language === 'EN' ? 'Logout' : 'Déconnexion'} </button>
-    <Link to="/suggestions" className="ms-3">
-      <button className="btn btn-warning"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
-    </Link>
       {localStorage.getItem('token') && (
         <>
           {/* Search Bar and Filters */}

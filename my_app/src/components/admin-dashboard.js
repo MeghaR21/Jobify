@@ -30,6 +30,13 @@ const Modify = () => {
       });
   }, [page]);
 
+  // // Handle Logout function
+  // const handleLogout = () => {
+  //   localStorage.removeItem('token'); // Clear the token on logout
+  //   setIsAdmin(false); // Reset admin state
+  //   navigate('/'); // Redirect to login page
+  // };
+
   const fetchData = () => {
     instance.get(`/users_list?page=${page}&limit=${itemsPerPage}`)
       .then(response => setUsers(response.data))
@@ -130,10 +137,7 @@ const Modify = () => {
 
   return (
     <div>
-      {/* Logout Button
-      <Button className="mt-3 btn btn-danger" onClick={handleLogout}>
-        Logout
-      </Button> */}
+      {/* <button onClick={handleLogout}>{language === 'EN' ? 'Logout' : 'Déconnexion'} </button> */}
       <h1>Admin Dashboard</h1>
 
       {/* USERS TABLE */}

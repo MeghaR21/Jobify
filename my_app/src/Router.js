@@ -5,7 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './components/myaxios';
 import AdminDashboard from './components/admin-dashboard';
 import LoginPage from './components/login';
-import Suggestions from './components/suggestions';
 import JobAdForm from './components/recruiter';
 import HomePage from './components/homepage';
 import AppUserPage from './components/app-user';
@@ -85,17 +84,12 @@ function AppRouter() {
           <Route path="/admin-dashboard" element={<AdminDashboard/>}/>
           <Route path="/recruiter"element={<JobAdForm/>}/>
           <Route path="/app-user"element={<AppUserPage/>}/>
-          <Route path="/" element={<HomePage darkMode={darkMode} language={language}/>}/>
+          <Route path="/" element={<HomePage darkMode={darkMode} language={language} toggleDarkMode={toggleDarkMode} toggleLanguage={toggleLanguage} />}/>
           <Route path="/login"element={!isAdmin ? <LoginPage /> : <Navigate to="/admin-dashboard"/>}/>
           <Route path="/jobadvert" element={<JobAdvert/>}/>
           <Route path="/jobadvertuser" element={<JobAdvertUser/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/wizard" element={<Wizard/>}/>
-
-          {/* Suggestions Route */}
-          <Route path="/suggestions"
-            element={<Suggestions darkMode={darkMode} toggleDarkMode={toggleDarkMode} language={language} toggleLanguage={toggleLanguage} />}
-          />
         </Routes>
 
         {/* Footer */}
