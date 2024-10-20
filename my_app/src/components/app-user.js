@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Button, Link, useNavigate } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { instance } from './myaxios';
 import JobAdvertUser from './jobadvertuser';
 
 
-function AppUserPage() {
+function AppUserPage(darkMode) {
   const [jobAds, setJobAds] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false); // Dynamic admin status
-  // const [searchTerm, setSearchTerm] = useState(''); // For search functionality
+  const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     title: '',
     company: '',
@@ -16,29 +17,45 @@ function AppUserPage() {
     salary: '',
     date: '',
   });
-  const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState('EN'); // Default language
+  const [errorMessage, setErrorMessage] = useState(''); // State for error message
+  const [showAlert, setShowAlert] = useState(false); 
   const navigate = useNavigate(); // For navigation after logout
+
+  // Check if the user is authenticated and has the correct role
+  const token = localStorage.getItem('token');
+  const userRole = localStorage.getItem('user_role');
+
+  // if (!token) {
+  //   setErrorMessage('You must be logged in to access this page.');
+  //   setAuthenticated(false);
+  //   return;
+  // }
 
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
-    fetchJobAds();
-  }, []);
+    if (!token) {
+      setErrorMessage('You must be logged in to access this page.');
+      setShowAlert(true); // Show the alert if the user is not authenticated
+      return;
+    } else {
+      fetchJobAds(); // Fetch job ads only if the user is authenticated
+    }
+  }, [token]);
 
   const fetchJobAds = () => {
     instance.get('/advertisements_list')
       .then((response) => {
-        setJobAds(response.data); // Store fetched job ads in state
+        setJobAds(response.data);
       })
       .catch((error) => {
         console.error('Error fetching job ads:', error);
       });
   };
 
-  // // Handle search input changes
-  // const handleSearchChange = (e) => {
-  //   setSearchTerm(e.target.value.toLowerCase());
-  // };
+  // Handle search input changes
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
 
   // Handle filter changes
   const handleFilterChange = (e) => {
@@ -49,7 +66,7 @@ function AppUserPage() {
   // Handle Logout function
   const handleLogout = () => {
     localStorage.removeItem('token'); // Clear the token on logout
-    setIsAdmin(false); // Reset admin state
+    localStorage.removeItem('user_id'); // Reset admin state
     navigate('/'); // Redirect to login page
   };
 
@@ -67,37 +84,28 @@ function AppUserPage() {
 
   return (
     <>
-    {/* Logout Button */}
-    <Link to="/profile">  
-      <button className="btn btn-pale-orange"> {language === 'EN' ? 'My Profile' : 'Mon Profil'} </button> 
-    </Link>
-    <button onClick={handleLogout}>{language === 'EN' ? 'Logout' : 'Déconnexion'} </button>
-    <Link to="/suggestions" className="ms-3">
-      <button className="btn btn-warning"> {language === 'EN' ? 'Suggestions' : 'Suggestions'} </button>
-    </Link>
-      {localStorage.getItem('token') && (
+      {/* Display the alert if there's an error message */}
+      {showAlert && (
+        <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+          {errorMessage}
+        </Alert>
+      )}
+
+      {token && (
         <>
+          {/* Logout Button */}
+          <Link to="/profile">
+            <button className="btn btn-pale-orange">My Profile</button>
+          </Link>
+          <button onClick={handleLogout}>Logout</button>
+
           {/* Search Bar and Filters */}
           <div className="container my-4">
             <div className="row">
-              {/* <div className="col-md-4">
-                <input
-                  type="text"
-                  placeholder={
-                    language === 'EN'
-                      ? 'Search in job description...'
-                      : "Rechercher dans la description de l'emploi..."
-                  }
-                  className="form-control"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-              </div> */}
-
               <div className="col-md-3">
                 <input
                   type="text"
-                  placeholder={language === 'EN' ? 'Filter by title' : 'Filtrer par titre'}
+                  placeholder='Filter by title'
                   className="form-control"
                   name="title"
                   value={filters.title}
@@ -108,7 +116,7 @@ function AppUserPage() {
               <div className="col-md-3">
                 <input
                   type="text"
-                  placeholder={language === 'EN' ? 'Filter by company' : 'Filtrer par entreprise'}
+                  placeholder='Filter by company'
                   className="form-control"
                   name="company"
                   value={filters.company}
@@ -119,9 +127,7 @@ function AppUserPage() {
               <div className="col-md-2">
                 <input
                   type="text"
-                  placeholder={
-                    language === 'EN' ? 'Filter by localization' : 'Filtrer par localisation'
-                  }
+                  placeholder='Filter by localization'
                   className="form-control"
                   name="localization"
                   value={filters.localization}
@@ -132,7 +138,7 @@ function AppUserPage() {
               <div className="col-md-2">
                 <input
                   type="number"
-                  placeholder={language === 'EN' ? 'Salary' : 'Salaire'}
+                  placeholder='Salary'
                   className="form-control"
                   name="salary"
                   value={filters.salary}
@@ -167,17 +173,13 @@ function AppUserPage() {
                       description={ad.description}
                       fullDescription={ad.full_description}
                       creationDate={new Date(ad.created_at).toLocaleDateString()}
-                      advertisementId={ad.id} // get the ad id 
+                      advertisementId={ad.id}
                     />
                   </div>
                 ))
               ) : (
                 <div className="text-center">
-                  <p>
-                    {language === 'EN'
-                      ? 'No job ads match your search or filters.'
-                      : 'Aucune annonce ne correspond à vos critères.'}
-                  </p>
+                  <p>No job ads match your search or filters.</p>
                 </div>
               )}
             </div>
@@ -185,7 +187,7 @@ function AppUserPage() {
         </>
       )}
     </>
-  )
+  );
 }
 
 export default AppUserPage;

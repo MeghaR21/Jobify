@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 
 class LoginPage extends Component {
   constructor(props) {
@@ -10,6 +10,7 @@ class LoginPage extends Component {
       email: '',
       password: '',
       error: '',
+      successMessage: '',
       showSignUp: false,
       signUpData: {
         lastName: '',
@@ -18,9 +19,28 @@ class LoginPage extends Component {
         email: '',
         password: '',
         confirmPassword: '',
-      }
+        isRecruiter: false, // Default value for isRecruiter
+        company_id: '', // Add company_id to signUpData
+      },
+      loadingCompanies: true, // Loading state for companies
+      companies: [], // Store companies fetched from API
     };
   }
+
+  componentDidMount() {
+    this.fetchCompanies();
+  }
+
+  fetchCompanies = () => {
+    // Fetch companies from API and update state
+    instance.get('companies_list') // Adjust endpoint as necessary
+      .then(response => {
+        this.setState({ companies: response.data, loadingCompanies: false });
+      })
+      .catch(() => {
+        this.setState({ error: 'Error fetching companies', loadingCompanies: false });
+      });
+  };
 
   handleInputChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -44,18 +64,16 @@ class LoginPage extends Component {
       .then(response => {
         localStorage.setItem('token', response.data.access_token); // Store token
         localStorage.setItem('user_id', response.data.user.id); // Store user ID
-        
-
-      
+        localStorage.setItem('user_role', response.data.user.role); // Store user ID
 
         // Check user role
-        const userRole = response.data.user.role; // Adjust based on your API response structure
+        const userRole = response.data.user.role;
 
         // Redirect based on role
         if (userRole === 'admin') {
           this.props.navigate('/admin-dashboard'); // Redirect to Admin Dashboard
         } else if (userRole === 'recruiter') {
-          this.props.navigate('/Recruiter'); // Redirect to Recruiter page
+          this.props.navigate('/recruiter'); // Redirect to Recruiter page
         } else {
           this.props.navigate('/app-user'); // Redirect to User app
         }
@@ -70,7 +88,7 @@ class LoginPage extends Component {
     const { signUpData } = this.state;
 
     if (signUpData.password !== signUpData.confirmPassword) {
-      this.setState({ error: "Passwords do not match!" });
+      this.setState({ error: "Passwords do not match!", successMessage: ''});
       return;
     }
 
@@ -81,36 +99,45 @@ class LoginPage extends Component {
       phone: signUpData.phone,
       email: signUpData.email,
       password: signUpData.password,
-      password_confirmation: signUpData.confirmPassword // Laravel expects 'password_confirmation'
+      password_confirmation: signUpData.confirmPassword, // Laravel expects 'password_confirmation'
+      role: signUpData.isRecruiter ? 'recruiter' : 'candidate', // Set role based on recruiter status
+      company_id: signUpData.isRecruiter ? signUpData.company_id : null // Include company_id if recruiter
     };
 
     instance.post('/register', signUpPayload)
-      .then(() => {
-        alert('Registration successful! Please log in.');
-        this.setState({ showSignUp: false }); // Hide Sign-Up form after successful registration
-      })
-      .catch(error => {
-        this.setState({ error: 'Error during registration: ' + error.message });
+    .then(() => {
+      this.setState({ 
+        successMessage: 'Registration successful! Please log in.',
+        error: '', 
+        showSignUp: false, // Hide Sign-Up form
       });
+    })
+    .catch(error => {
+      this.setState({ error: 'Error during registration: ' + error.message, successMessage: ''  });
+    });
   };
 
   toggleForm = () => {
     this.setState(prevState => ({
       showSignUp: !prevState.showSignUp,
       error: '',
+      successMessage: '',
     }));
   };
 
   render() {
-    const { email, password, error, showSignUp, signUpData } = this.state;
+    const { email, password, error, showSignUp, signUpData, loadingCompanies, companies } = this.state;
 
     return (
       <>
-
+        <Link to="/"> 
+          <button className="btn btn-pale-orange"> Home </button> 
+        </Link> 
         <Container className="mt-5">
           <h2>{showSignUp ? 'Sign Up' : 'Login'}</h2>
+          {/* Display error message */}
           {error && <Alert variant="danger">{error}</Alert>}
-
+          
           {!showSignUp && (
             <>
               <Form onSubmit={this.handleSubmit}>
@@ -138,7 +165,7 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-4">
+                <Button variant="warning" type="submit" className="mt-4">
                   Login
                 </Button>
               </Form>
@@ -228,7 +255,41 @@ class LoginPage extends Component {
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-4">
+                <Form.Group controlId="formIsRecruiter" className="mt-3">
+                  <Form.Check
+                    type="checkbox"
+                    label="Are you a recruiter?"
+                    name="isRecruiter"
+                    checked={signUpData.isRecruiter}
+                    onChange={this.handleSignUpChange}
+                  />
+                </Form.Group>
+
+                {signUpData.isRecruiter && (
+                  <Form.Group controlId="formCompany" className="mt-3">
+                    <Form.Label>Select Company</Form.Label>
+                    <Form.Control
+                      as="select"
+                      name="company_id"
+                      value={signUpData.company_id}
+                      onChange={this.handleSignUpChange}
+                      required
+                    >
+                      <option value="">Select a company</option>
+                      {loadingCompanies ? (
+                        <option disabled>Loading companies...</option>
+                      ) : (
+                        companies.map((company) => (
+                          <option key={company.id} value={company.id}>
+                            {company.name}
+                          </option>
+                        ))
+                      )}
+                    </Form.Control>
+                </Form.Group>
+                 )}
+
+                <Button variant="warning" type="submit" className="mt-4">
                   Validate
                 </Button>
               </Form>
@@ -242,7 +303,6 @@ class LoginPage extends Component {
               </div>
             </>
           )}
-
         </Container>
       </>
     );
