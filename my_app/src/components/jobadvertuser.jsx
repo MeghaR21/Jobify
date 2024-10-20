@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Alert } from 'react-bootstrap';
 import { instance } from './myaxios';
 
 function JobAdvertUser({ 
@@ -17,6 +18,9 @@ function JobAdvertUser({
   const [formData, setFormData] = useState({
     message: ''
   });
+  const [successMessage, setSuccessMessage] = useState('');  // Success message state
+  const [errorMessage, setErrorMessage] = useState('');
+
   const userId = localStorage.getItem('user_id');
   // useEffect(() => {
   //   // Pre-fill form data with user information if available
@@ -58,16 +62,18 @@ function JobAdvertUser({
       user_id: userId, // Add the user ID here
       message: formData.message,       // Message de l'utilisateur
       advertisement_id: advertisementId // Add the advertisement ID here
-      // Si tu as besoin d'envoyer d'autres informations comme `advertisement_id`, tu peux les ajouter ici
     };
 
-    instance.post('/applications_create_registered',applicationData)
-    .then(response => 
-      {alert('Application submitted successfully!');
+    instance.post('/applications_create_registered', applicationData)
+    .then(response => {
+      setSuccessMessage('Application submitted successfully!');  // Show success message
+      setErrorMessage(''); 
       handleCloseForm(); // Reset and close form after submission
     })
     .catch(error => {
       console.error('Error submitting application:', error);
+      setErrorMessage('Failed to submit the application. Please try again later.');
+      setSuccessMessage('');
     });
   };
   return (
@@ -93,6 +99,18 @@ function JobAdvertUser({
         <button className="btn btn-warning text-dark" onClick={handleApplyClick}>
           Apply
         </button>
+        {/* Display success or error messages */}
+        {successMessage && (
+          <Alert variant="success" onClose={() => setSuccessMessage('')} dismissible>
+            {successMessage}
+          </Alert>
+        )}
+
+        {errorMessage && (
+          <Alert variant="danger" onClose={() => setErrorMessage('')} dismissible>
+            {errorMessage}
+          </Alert>
+        )}
 
         {isApplying && (
           <form onSubmit={handleFormSubmit} className="mt-3">

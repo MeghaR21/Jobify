@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
 
@@ -85,5 +87,30 @@ class UserController extends Controller
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to delete user', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    public function register(Request $request)
+    {
+        // Valider les données entrantes
+        $validatedData = $request->validate([
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            
+        ]);
+
+        // Créer un nouvel utilisateur
+        $user = User::create([
+            'last_name' => $validatedData['last_name'],
+            'first_name'=>$request->first_name,
+            'phone'=>$request->phone,
+            'email' => $validatedData['email'],
+            'password' => Hash::make(Str::random(8)),
+        ]);
+
+        // Retourner une réponse JSON (utile pour AJAX)
+        return response()->json([
+            'message' => 'Utilisateur créé avec succès',
+            'user' => $user
+        ], 201);
     }
 }

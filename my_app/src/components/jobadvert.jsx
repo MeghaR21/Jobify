@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { instance } from './myaxios';
+import { Alert } from 'react-bootstrap';
 
 function JobAdvert({ 
   title, 
   companyName, 
   place,
   contractType,
-  salary, // Fixed typo here
+  salary, 
   description, 
   fullDescription, 
   creationDate,
@@ -21,6 +22,8 @@ function JobAdvert({
     phone: '',
     message: ''
   });
+  const [alertMessage, setAlertMessage] = useState({ show: false, variant: '', message: '' });
+  const [darkMode, setDarkMode] = useState(false);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -49,7 +52,7 @@ function JobAdvert({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address');
+      setAlertMessage({ show: true, variant: 'danger', message: 'Please enter a valid email address' });
       return;
     }
 
@@ -61,36 +64,30 @@ function JobAdvert({
       phone: formData.phone,           // Numéro de téléphone
       message: formData.message,       // Message de l'utilisateur
       advertisement_id: advertisementId // Add the advertisement ID here
-      // Si tu as besoin d'envoyer d'autres informations comme `advertisement_id`, tu peux les ajouter ici
     };
 
     
     instance.post('/applications_create_unregistered',applicationData)
       .then(response => {
-        alert('Application submitted successfully!');
+        setAlertMessage({ show: true, variant: 'success', message: 'Application submitted successfully!' });
         handleCloseForm(); // Reset and close form after submission
       })
       .catch(error => {
+        let errorMsg = 'An error occurred. Please try again.';
         if (error.response) {
-          // Server responded with a status code other than 2xx
-          console.error('Error response data:', error.response.data);
-          console.error('Error response status:', error.response.status);
-          console.error('Error response headers:', error.response.headers);
+          errorMsg = error.response.data.message || 'Server error';
         } else if (error.request) {
-          // Request was made but no response received
-          console.error('No response received:', error.request);
-        } else {
-          // Other error during setup
-          console.error('Error setting up request:', error.message);
+          errorMsg = 'No response received from the server.';
         }
-      })
+        setAlertMessage({ show: true, variant: 'danger', message: errorMsg });
+      });
   };
 
   return (
     <div className="card h-100 shadow-sm">
       <div className="card-body">
         <h2 className="card-title">{title}</h2>
-        <p><strong>Description:</strong> {description}</p>
+        <p className='descriptionJobAvert'><strong>Description:</strong> {description}</p>
 
         {isExpanded && (
           <div className="full-description">
@@ -103,7 +100,7 @@ function JobAdvert({
           </div>
         )}
 
-        <button className="btn btn-learn-more btn-pastel-orange me-3" onClick={handleToggle}>
+        <button className="btn btn-learn-more btn-pastel-orange me-3" variant="outlined-warning" style={{backgroundColor:"black", color:"green", fontWeight:"900"}} onClick={handleToggle}>
           {isExpanded ? 'Show Less' : 'Learn More'}
         </button>
         <button className="btn btn-warning text-dark" onClick={handleApplyClick}>
@@ -173,6 +170,12 @@ function JobAdvert({
               Close
             </button>
           </form>
+        )}
+        {/* Display Alert if needed */}
+        {alertMessage.show && (
+          <Alert variant={alertMessage.variant} className="mt-3">
+            {alertMessage.message}
+          </Alert>
         )}
       </div>
     </div>

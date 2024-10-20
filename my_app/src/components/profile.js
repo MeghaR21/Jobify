@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 
 function Profile({ language }) {
   const [firstName, setFirst] = useState('');
@@ -10,21 +10,20 @@ function Profile({ language }) {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); 
   const [userId, setUserId] = useState(localStorage.getItem('user_id')); // Add userId state
   const navigate = useNavigate(); //after logout
 
   useEffect(() => {
     if (userId) {
       instance
-        .get(`/users_show/${userId}`)  // Adjust API route to get user by ID
+        .get(`/users_show/${userId}`)
         .then((response) => {
           const userData = response.data;
           setFirst(userData.first_name);
           setLast(userData.last_name);
           setEmail(userData.email);
           setPhone(userData.phone);
-         
-     
         })
         .catch((error) => console.error('Error fetching user data:', error));
     }
@@ -32,9 +31,9 @@ function Profile({ language }) {
 
   const handleProfileUpdate = (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
 
-   
-    
     const payload = {
       first_name: firstName,
       last_name: lastName,
@@ -45,15 +44,15 @@ function Profile({ language }) {
 
     instance
     .put(`/users_update/${userId}`, payload)
-    .then(response => 
-      {alert('Application submitted successfully!');
+    .then((response) => {
+      setSuccess('Profile updated successfully!');
     })
-    .catch((error) => console.error('Error updating account:', error));
-    
+    .catch((error) => {
+      setError('Error updating profile. Please try again.');
+      console.error('Error updating account:', error);
+    })
   };
   
-  //Delete account for user registered
-
   const handleDeleteAccount = () => {
     if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
       instance
@@ -61,29 +60,41 @@ function Profile({ language }) {
         .then(() => {
           localStorage.removeItem('user_id'); // Remove user_id from local storage
           localStorage.removeItem('token');   // Remove token from local storage
-          alert('Account deleted successfully');
-          navigate('/'); // Redirect to home page
+          setSuccess('Account deleted successfully');
+          navigate('/');
         })
-        .catch((error) => console.error('Error deleting account:', error));
+        .catch((error) => {
+          setError('Error deleting account. Please try again.');
+          console.error('Error deleting account:', error);
+        });
     }
   };
 
   const handleLogout = () => {
-    // Implement your logout logic here
     localStorage.removeItem('token');
-    navigate('/'); // Redirect to login page
+    localStorage.removeItem('user_id')
+    navigate('/');
   };
 
   return (
     <>
       <Container>
+      <Link to="/app-user"> 
+        <button className="btn btn-pale-orange"> Home </button> 
+      </Link> 
         {/* Logout Button */}
         <Button className="mt-3 btn btn-warning" onClick={handleLogout}>
           Logout
         </Button>
         <h2 className="mt-4">Profile</h2>
         <h4> Modify Account</h4>
+
+        {/* Display Error Alert */}
         {error && <Alert variant="danger">{error}</Alert>}
+        
+        {/* Display Success Alert */}
+        {success && <Alert variant="success">{success}</Alert>}
+
         <Form onSubmit={handleProfileUpdate}>
           <Form.Group className="mb-3">
             <Form.Label>First Name</Form.Label>

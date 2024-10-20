@@ -4,10 +4,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import JobAdvert from './jobadvert';
 import { instance } from './myaxios';
 import { Link } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
 
-function HomePage({ darkMode, language }) {
+function HomePage({ darkMode }) {
   const [jobAds, setJobAds] = useState([]);
-  // const [searchTerm, setSearchTerm] = useState(''); // For search engine
   const [filters, setFilters] = useState({
     title: '',
     company: '',
@@ -15,6 +15,10 @@ function HomePage({ darkMode, language }) {
     salary: '',
     date: '',
   });
+
+  const [error, setError] = useState(''); // State for handling error messages
+  const [showAlert, setShowAlert] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // State to control alert visibility
 
   // Fetch job ads from the Laravel API when the component mounts
   useEffect(() => {
@@ -24,17 +28,20 @@ function HomePage({ darkMode, language }) {
   const fetchJobAds = () => {
     instance.get("/advertisements_list") // Use env variable
       .then(response => {
-        setJobAds(response.data); // Store fetched job ads in state
+        setJobAds(response.data);
+        setShowAlert(false); 
       })
       .catch(error => {
         console.error('Error fetching job ads:', error);
+        setError('Error fetching job ads. Please try again later.');
+        setShowAlert(true);
       });
   };
   
-  // // Handle search input changes
-  // const handleSearchChange = (e) => {
-  //   setSearchTerm(e.target.value.toLowerCase());
-  // };
+  // Handle search input changes
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value.toLowerCase());
+  };
 
   // Handle filter changes
   const handleFilterChange = (e) => {
@@ -56,10 +63,14 @@ function HomePage({ darkMode, language }) {
 
   return (
     <>
-    {/* Login Button and Suggestions Button */} 
     <Link to="/login"> 
-      <button className="btn btn-pale-orange"> {language === 'EN' ? 'Login / Sign Up' : 'Connexion / Inscription'} </button> 
+      <button className="btn btn-pale-orange"> Login / Sign Up </button> 
     </Link> 
+    {showAlert && (
+      <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+        {error}
+      </Alert>
+    )}
       {/* Search Bar and Filters */}
       <div className="container my-4">
         <div className="row">
@@ -76,7 +87,7 @@ function HomePage({ darkMode, language }) {
           <div className="col-md-3">
             <input
               type="text"
-              placeholder={language === 'EN' ? 'Filter by title' : 'Filtrer par titre'}
+              placeholder='Filter by title'
               className="form-control"
               name="title"
               value={filters.title}
@@ -87,7 +98,7 @@ function HomePage({ darkMode, language }) {
           <div className="col-md-3">
             <input
               type="text"
-              placeholder={language === 'EN' ? 'Filter by company' : 'Filtrer par entreprise'}
+              placeholder='Filter by company'
               className="form-control"
               name="company"
               value={filters.company}
@@ -98,7 +109,7 @@ function HomePage({ darkMode, language }) {
           <div className="col-md-2">
             <input
               type="text"
-              placeholder={language === 'EN' ? 'Filter by localization' : 'Filtrer par localisation'}
+              placeholder='Filter by localization'
               className="form-control"
               name="localization"
               value={filters.localization}
@@ -109,7 +120,7 @@ function HomePage({ darkMode, language }) {
           <div className="col-md-2">
             <input
               type="number"
-              placeholder={language === 'EN' ? 'Salary' : 'Salaire'}
+              placeholder='Salary'
               className="form-control"
               name="salary"
               value={filters.salary}
@@ -151,7 +162,7 @@ function HomePage({ darkMode, language }) {
             ))
           ) : (
             <div className="text-center">
-              <p>{language === 'EN' ? 'No job ads match your search or filters.' : "Aucune annonce d'emploi ne correspond à votre recherche ou à vos filtres."}</p>
+              <p>No job ads match your search or filters.</p>
             </div>
           )}
         </div>

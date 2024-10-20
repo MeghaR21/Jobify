@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
      //route pour la table users
      // Index: Get all users
     Route::get('/users_list', [UserController::class, 'index']);
+    Route::post('/user/register', [UserController::class, 'register']);
 
     // Show: Get a specific user by ID
     Route::get('/users_show/{id}', [UserController::class, 'show']);
