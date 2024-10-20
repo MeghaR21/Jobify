@@ -50,11 +50,12 @@ const Wizard = ({ show, handleClose, handleSubmit, initialData, fields, fetchDat
                 type="text"
                 name={field}
                 value={formData[field] || ''}  // Set value dynamically
-                onChange={handleChange}        // Handle change for each field
+                onChange={handleChange} 
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </Form.Group>
           ))}
-          <Button variant="warning" type="submit">
+          <Button type="submit" variant="success" className="me-2">
             Submit
           </Button>
         </Form>

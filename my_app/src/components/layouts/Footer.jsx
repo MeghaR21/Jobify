@@ -1,31 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
+import '../../App.css';
+import './Footer.css';
 
-function Footer() {
-  const [jobAds, setJobAds] = useState([]);
-  const [isAdmin, ] = useState(false);
-
-  const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState('EN'); // Default language
-
-
-
-  
-  return (
-    <>
-      <div>
-        {/* Footer */}
-        <footer className={`footer_class=d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
-          <div>
-            <p>&copy; {new Date().getFullYear()} Jobify. {language === 'EN' ? 'All rights reserved.' : 'Tous droits réservés.'}</p>
-          </div>
-          <div>
-            <a href="/privacy-policy" className="text-decoration-none text-reset">{language === 'EN' ? 'Privacy Policy' : 'Politique de confidentialité'}</a>
-            <span className="mx-2">|</span>
-          </div>
-        </footer>
-      </div>
-    </>
-  );
+const Footer = ({ darkMode }) => {
+    <footer className={`footer p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
+    <div className="text-center">
+      <p>&copy; {new Date().getFullYear()} Jobify. All rights reserved.</p>
+      <a href="/privacy-policy" className="text-decoration-none text-reset">Privacy Policy</a>
+      <span className="mx-2">|</span>
+      <a href="/terms-of-service" className="text-decoration-none text-reset">Terms of Service</a>
+    </div>
+    <div className="social-media mt-3">
+      <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+        <i className="fa-brands fa-linkedin"></i>
+      </a>
+      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+        <i className="fa-brands fa-twitter"></i>
+      </a>
+      <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+        <i className="fa-brands fa-facebook"></i>
+      </a>
+      <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+        <i className="fa-brands fa-instagram"></i>
+      </a>
+    </div>
+  </footer>
 }
-
 export default Footer;

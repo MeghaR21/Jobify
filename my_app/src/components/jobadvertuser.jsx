@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Card, Button } from 'react-bootstrap';
 import { instance } from './myaxios';
 
 function JobAdvertUser({ 
@@ -20,6 +20,7 @@ function JobAdvertUser({
   });
   const [successMessage, setSuccessMessage] = useState('');  // Success message state
   const [errorMessage, setErrorMessage] = useState('');
+  const [alertMessage, setAlertMessage] = useState({ show: false, variant: '', message: '' });
 
   const userId = localStorage.getItem('user_id');
   // useEffect(() => {
@@ -77,28 +78,37 @@ function JobAdvertUser({
     });
   };
   return (
-    <div className="card h-100 shadow-sm">
-      <div className="card-body">
-        <h2 className="card-title">{title}</h2>
-        <p><strong>Description:</strong> {description}</p>
+    <Card border="success" className="h-100 shadow-sm" style={{ backgroundColor: '#1E1E1E', color: 'white'  }}>
+      <Card.Header style={{ color: 'lightgreen' }}>{companyName}</Card.Header>
+      <Card.Body>
+        <Card.Title style={{ fontWeight: "bold", textTransform: "uppercase", letterSpacing: "2px", borderBottom: '2px dotted lightgreen', marginBottom: "1rem" }}>
+          {title}
+        </Card.Title>
+        <Card.Text>{description}</Card.Text>
 
         {isExpanded && (
           <div className="full-description">
             <p>{fullDescription}</p>
-            <p><strong></strong> {companyName}</p>
+            <p><strong></strong> {}</p>
             <p><strong></strong> {place}</p>
             <p><strong></strong> {contractType}</p>
-            <p><strong></strong> {salary}</p>
-            <p><strong>Date</strong> {creationDate}</p>
+            <p><strong>$</strong> {salary}</p>
+            <p><strong>Date:</strong> {creationDate}</p>
           </div>
         )}
 
-        <button className="btn btn-warning me-3" onClick={handleToggle}>
+        <Button 
+          variant="dark" 
+          style={{ fontWeight: "900", marginRight: "1rem" }} 
+          onClick={handleToggle}>
           {isExpanded ? 'Show Less' : 'Learn More'}
-        </button>
-        <button className="btn btn-warning text-dark" onClick={handleApplyClick}>
+        </Button>
+
+        <Button 
+          variant="success" 
+          onClick={handleApplyClick}>
           Apply
-        </button>
+        </Button>
         {/* Display success or error messages */}
         {successMessage && (
           <Alert variant="success" onClose={() => setSuccessMessage('')} dismissible>
@@ -122,18 +132,25 @@ function JobAdvertUser({
                 name="message"
                 value={formData.message}
                 onChange={handleFormChange}
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </div>
-            <button type="submit" className="btn btn-warning text-dark me-2">
-             Submit
-            </button>
-            <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
+            <Button type="submit" variant="success" className="me-2">
+              Submit
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleCloseForm}>
               Close
-            </button>
+            </Button>
           </form>
         )}
-      </div>
-    </div>
+        {/* Display Alert if needed */}
+        {alertMessage.show && (
+          <Alert variant={alertMessage.variant} className="mt-3">
+            {alertMessage.message}
+          </Alert>
+        )}
+      </Card.Body>
+    </Card>
   );
 }
 

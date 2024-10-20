@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import { instance } from './myaxios';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class LoginPage extends Component {
 
   fetchCompanies = () => {
     // Fetch companies from API and update state
-    instance.get('companies_list') // Adjust endpoint as necessary
+    instance.get('companies_list')
       .then(response => {
         this.setState({ companies: response.data, loadingCompanies: false });
       })
@@ -66,10 +66,8 @@ class LoginPage extends Component {
         localStorage.setItem('user_id', response.data.user.id); // Store user ID
         localStorage.setItem('user_role', response.data.user.role); // Store user ID
 
-        // Check user role
         const userRole = response.data.user.role;
 
-        // Redirect based on role
         if (userRole === 'admin') {
           this.props.navigate('/admin-dashboard'); // Redirect to Admin Dashboard
         } else if (userRole === 'recruiter') {
@@ -99,7 +97,7 @@ class LoginPage extends Component {
       phone: signUpData.phone,
       email: signUpData.email,
       password: signUpData.password,
-      password_confirmation: signUpData.confirmPassword, // Laravel expects 'password_confirmation'
+      password_confirmation: signUpData.confirmPassword, 
       role: signUpData.isRecruiter ? 'recruiter' : 'candidate', // Set role based on recruiter status
       company_id: signUpData.isRecruiter ? signUpData.company_id : null // Include company_id if recruiter
     };
@@ -125,16 +123,18 @@ class LoginPage extends Component {
     }));
   };
 
-  render() {
+  render(darkMode) {
     const { email, password, error, showSignUp, signUpData, loadingCompanies, companies } = this.state;
 
     return (
       <>
-        <Link to="/"> 
-          <button className="btn btn-pale-orange"> Home </button> 
+        <Link to="/" className="login-link">
+          <button className="btn-spotify-style" onClick={() => console.log('Button clicked!')}>
+            Home
+          </button>
         </Link> 
-        <Container className="mt-5">
-          <h2>{showSignUp ? 'Sign Up' : 'Login'}</h2>
+        <h2 className="login-title">{showSignUp ? 'Sign Up' : 'Login'}</h2>
+        <Container className="login-container">
           {/* Display error message */}
           {error && <Alert variant="danger">{error}</Alert>}
           
@@ -150,6 +150,7 @@ class LoginPage extends Component {
                     value={email}
                     onChange={this.handleInputChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -162,17 +163,18 @@ class LoginPage extends Component {
                     value={password}
                     onChange={this.handleInputChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
-                <Button variant="warning" type="submit" className="mt-4">
+                <Button variant="spotify" type="submit" className="mt-4" style={{backgroundColor: '#1DB954'}}>
                   Login
                 </Button>
               </Form>
 
-              <div className="mt-3">
+              <div className="bottom-left">
                 <p>Don't have an account?{' '}
-                  <Button variant="link" onClick={this.toggleForm}>
+                  <Button variant="link" className="link-button" onClick={this.toggleForm}>
                     Sign Up!
                   </Button>
                 </p>
@@ -192,6 +194,7 @@ class LoginPage extends Component {
                     value={signUpData.lastName}
                     onChange={this.handleSignUpChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -204,6 +207,7 @@ class LoginPage extends Component {
                     value={signUpData.firstName}
                     onChange={this.handleSignUpChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -216,6 +220,7 @@ class LoginPage extends Component {
                     value={signUpData.phone}
                     onChange={this.handleSignUpChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -228,6 +233,7 @@ class LoginPage extends Component {
                     value={signUpData.email}
                     onChange={this.handleSignUpChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -240,6 +246,7 @@ class LoginPage extends Component {
                     value={signUpData.password}
                     onChange={this.handleSignUpChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -252,6 +259,7 @@ class LoginPage extends Component {
                     value={signUpData.confirmPassword}
                     onChange={this.handleSignUpChange}
                     required
+                    style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                   />
                 </Form.Group>
 
@@ -274,6 +282,7 @@ class LoginPage extends Component {
                       value={signUpData.company_id}
                       onChange={this.handleSignUpChange}
                       required
+                      style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
                     >
                       <option value="">Select a company</option>
                       {loadingCompanies ? (
@@ -289,14 +298,14 @@ class LoginPage extends Component {
                 </Form.Group>
                  )}
 
-                <Button variant="warning" type="submit" className="mt-4">
+                <Button variant="spotify" type="submit" className="mt-4"style={{backgroundColor: '#1DB954'}}>
                   Validate
                 </Button>
               </Form>
 
-              <div className="mt-3">
+              <div className="bottom-left">
                 <p>Already have an account?{' '}
-                  <Button variant="link" onClick={this.toggleForm}>
+                  <Button variant="link" className="link-button" onClick={this.toggleForm}>
                     Login here!
                   </Button>
                 </p>

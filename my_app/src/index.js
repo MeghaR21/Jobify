@@ -4,6 +4,7 @@ import AppRouter from './Router';
 import './App.css';
 import './index.css';  // Your custom CSS
 import 'bootstrap/dist/css/bootstrap.css';  // Bootstrap CSS
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import reportWebVitals from './reportWebVitals';  // Web vitals for performance metrics
 
 

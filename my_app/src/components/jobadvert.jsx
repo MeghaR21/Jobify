@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { instance } from './myaxios';
-import { Alert } from 'react-bootstrap';
+import { Alert, Card, Button } from 'react-bootstrap';
 
 function JobAdvert({ 
   title, 
@@ -11,7 +11,7 @@ function JobAdvert({
   description, 
   fullDescription, 
   creationDate,
-  advertisementId // Receiving the advertisement ID here
+  advertisementId
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isApplying, setIsApplying] = useState(false);
@@ -23,7 +23,6 @@ function JobAdvert({
     message: ''
   });
   const [alertMessage, setAlertMessage] = useState({ show: false, variant: '', message: '' });
-  const [darkMode, setDarkMode] = useState(false);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -84,28 +83,37 @@ function JobAdvert({
   };
 
   return (
-    <div className="card h-100 shadow-sm">
-      <div className="card-body">
-        <h2 className="card-title">{title}</h2>
-        <p className='descriptionJobAvert'><strong>Description:</strong> {description}</p>
+    <Card border="success" className="h-100 shadow-sm" style={{ backgroundColor: '#1E1E1E', color: 'white'  }}>
+      <Card.Header style={{ color: 'lightgreen' }}>{companyName}</Card.Header>
+      <Card.Body>
+        <Card.Title style={{ fontWeight: "bold", textTransform: "uppercase", letterSpacing: "2px", borderBottom: '2px dotted lightgreen', marginBottom: "1rem" }}>
+          {title}
+        </Card.Title>
+        <Card.Text>{description}</Card.Text>
 
         {isExpanded && (
           <div className="full-description">
             <p>{fullDescription}</p>
-            <p><strong></strong> {companyName}</p>
+            <p><strong></strong> {}</p>
             <p><strong></strong> {place}</p>
             <p><strong></strong> {contractType}</p>
-            <p><strong></strong> {salary}</p>
+            <p><strong>$</strong> {salary}</p>
             <p><strong>Date:</strong> {creationDate}</p>
           </div>
         )}
 
-        <button className="btn btn-learn-more btn-pastel-orange me-3" variant="outlined-warning" style={{backgroundColor:"black", color:"green", fontWeight:"900"}} onClick={handleToggle}>
+        <Button 
+          variant="dark" 
+          style={{ fontWeight: "900", marginRight: "1rem" }} 
+          onClick={handleToggle}>
           {isExpanded ? 'Show Less' : 'Learn More'}
-        </button>
-        <button className="btn btn-warning text-dark" onClick={handleApplyClick}>
+        </Button>
+
+        <Button 
+          variant="success" 
+          onClick={handleApplyClick}>
           Apply
-        </button>
+        </Button>
 
         {isApplying && (
           <form onSubmit={handleFormSubmit} className="mt-3">
@@ -119,6 +127,7 @@ function JobAdvert({
                 value={formData.firstName}
                 onChange={handleFormChange}
                 required
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </div>
             <div className="mb-3">
@@ -130,6 +139,7 @@ function JobAdvert({
                 value={formData.lastName}
                 onChange={handleFormChange}
                 required
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </div>
             <div className="mb-3">
@@ -141,6 +151,7 @@ function JobAdvert({
                 value={formData.email}
                 onChange={handleFormChange}
                 required
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </div>
             <div className="mb-3">
@@ -152,6 +163,7 @@ function JobAdvert({
                 value={formData.phone}
                 onChange={handleFormChange}
                 required
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </div>
             <div className="mb-3">
@@ -161,24 +173,26 @@ function JobAdvert({
                 name="message"
                 value={formData.message}
                 onChange={handleFormChange}
+                style={{ backgroundColor: '#333', color: 'white', border: '1px solid lightgreen' }}
               />
             </div>
-            <button type="submit" className="btn btn-warning text-dark me-2">
+            <Button type="submit" variant="success" className="me-2">
               Submit
-            </button>
-            <button type="button" className="btn btn-warning text-dark ms-2" onClick={handleCloseForm}>
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleCloseForm}>
               Close
-            </button>
+            </Button>
           </form>
         )}
+
         {/* Display Alert if needed */}
         {alertMessage.show && (
           <Alert variant={alertMessage.variant} className="mt-3">
             {alertMessage.message}
           </Alert>
         )}
-      </div>
-    </div>
+      </Card.Body>
+    </Card>
   );
 }
 

@@ -63,112 +63,80 @@ function HomePage({ darkMode }) {
 
   return (
     <>
-    <Link to="/login"> 
-      <button className="btn btn-pale-orange"> Login / Sign Up </button> 
-    </Link> 
-    {showAlert && (
-      <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
-        {error}
-      </Alert>
-    )}
-      {/* Search Bar and Filters */}
-      <div className="container my-4">
-        <div className="row">
-          {/* <div className="col-md-4">
-            <input
-              type="text"
-              placeholder={language === 'EN' ? 'Search in job description...' : 'Recherchez dans la description...'}
-              className="form-control"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </div> */}
-
-          <div className="col-md-3">
-            <input
-              type="text"
-              placeholder='Filter by title'
-              className="form-control"
-              name="title"
-              value={filters.title}
-              onChange={handleFilterChange}
-            />
+      {/* Combined layout with login button, search bar, and filters */}
+      <div className="container-fluid">
+        <div className="row justify-content-between align-items-start">
+          <div className="col-md-2 login-container mb-3">
+            <Link to="/login" className="login-link">
+              <button className="btn-spotify-style" onClick={() => console.log('Button clicked!')}>
+                Login / Sign Up
+              </button>
+            </Link>
           </div>
 
-          <div className="col-md-3">
-            <input
-              type="text"
-              placeholder='Filter by company'
-              className="form-control"
-              name="company"
-              value={filters.company}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <div className="col-md-2">
-            <input
-              type="text"
-              placeholder='Filter by localization'
-              className="form-control"
-              name="localization"
-              value={filters.localization}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <div className="col-md-2">
-            <input
-              type="number"
-              placeholder='Salary'
-              className="form-control"
-              name="salary"
-              value={filters.salary}
-              onChange={handleFilterChange}
-            />
-          </div>
-
-          <div className="col-md-2">
-            <input
-              type="date"
-              className="form-control"
-              name="date"
-              value={filters.date}
-              onChange={handleFilterChange}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Job Ads Listing */}
-      <div className="container my-5">
-        <div className="row">
-          {/* Map through the filtered and searched job ads and render JobAdvert components */}
-          {filteredJobAds.length > 0 ? (
-            filteredJobAds.map((ad) => (
-              <div key={ad.id} className="col-md-4 mb-4">
-                <JobAdvert
-                  title={ad.job_title}
-                  companyName={ad.company.name} //ad.company.name
-                  place={ad.location}
-                  salary={ad.salary}
-                  contractType={ad.contract_type}
-                  description={ad.description}
-                  fullDescription={ad.full_description}
-                  creationDate={new Date(ad.created_at).toLocaleDateString()}
-                  advertisementId={ad.id} // Pass the advertisement ID here
+          <div className="col-md-10">
+            <div className="row mt-3 search-filter-container justify-content-start">
+              <div className="col-md-2">
+                <input
+                  type="text"
+                  placeholder="Search in job description..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="form-control spotify-input"
                 />
               </div>
-            ))
-          ) : (
-            <div className="text-center">
-              <p>No job ads match your search or filters.</p>
+              {['title', 'company', 'localization', 'salary', 'date'].map((filter, index) => (
+                <div className={`col-md-${filter === 'date' ? '2' : '3'} mb-2`} key={index}>
+                  <input
+                    type={filter === 'salary' ? 'number' : filter === 'date' ? 'date' : 'text'}
+                    placeholder={`Filter by ${filter}`}
+                    className="form-control"
+                    name={filter}
+                    value={filters[filter]}
+                    onChange={handleFilterChange}
+                  />
+                </div>
+              ))}
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Error Alert */}
+        {showAlert && (
+          <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>
+            {error}
+          </Alert>
+        )}
+
+        {/* Job Ads Listing */}
+        <div className="container my-5">
+          <div className="row">
+            {/* Map through the filtered and searched job ads and render JobAdvert components */}
+            {filteredJobAds.length > 0 ? (
+              filteredJobAds.map((ad) => (
+                <div key={ad.id} className="playlist-container">
+                  <JobAdvert
+                    title={ad.job_title}
+                    companyName={ad.company.name}
+                    place={ad.location}
+                    salary={ad.salary}
+                    contractType={ad.contract_type}
+                    description={ad.description}
+                    fullDescription={ad.full_description}
+                    creationDate={new Date(ad.created_at).toLocaleDateString()}
+                    advertisementId={ad.id} // Pass the advertisement ID here
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="text-center">
+                <p>No job ads match your search or filters.</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
-            
   );
 }
 

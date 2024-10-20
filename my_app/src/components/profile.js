@@ -79,15 +79,20 @@ function Profile({ language }) {
   return (
     <>
       <Container>
-      <Link to="/app-user"> 
-        <button className="btn btn-pale-orange"> Home </button> 
-      </Link> 
-        {/* Logout Button */}
-        <Button className="mt-3 btn btn-warning" onClick={handleLogout}>
-          Logout
-        </Button>
-        <h2 className="mt-4">Profile</h2>
-        <h4> Modify Account</h4>
+        <div className="col-md-2 login-container mb-3">
+          <Link to="/app-user" className="login-link">
+            <button className="btn-spotify-style" onClick={() => console.log('Button clicked!')}>
+              Home
+            </button>
+          </Link>
+          <Link to="/" className="login-link">
+            <button className="btn-spotify-style" onClick={handleLogout}>
+              Logout
+            </button>
+          </Link>
+        </div>
+        <h2 style={{ padding: "2rem 0", textAlign: "center", textTransform: "uppercase", letterSpacing: "5px" }}>Profile</h2>
+        <h4 style={{ padding: "2rem 0", textAlign: "left", textTransform: "uppercase", letterSpacing: "5px" }}> Modify Account</h4>
 
         {/* Display Error Alert */}
         {error && <Alert variant="danger">{error}</Alert>}
@@ -147,12 +152,14 @@ function Profile({ language }) {
             />
           </Form.Group>
 
-          <Button type="submit" className="btn btn-warning me-3">
-            Update
-          </Button>
-          <Button type="button" className="btn btn-warning me-3" onClick={handleDeleteAccount}>
-            Delete
-          </Button>
+          <div className="col-md-2 login-container mb-3">
+            <Button variant="spotify" type="submit" className="mt-4" style={{backgroundColor: '#1DB954'}}>
+              Login
+            </Button>
+            <Button variant="spotify" type="button" className="mt-4" onClick={handleDeleteAccount} style={{backgroundColor: '#1DB954'}}>
+              Delete
+            </Button>
+          </div>
         </Form>
       </Container>
     </>
