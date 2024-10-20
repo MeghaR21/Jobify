@@ -90,104 +90,84 @@ function AppUserPage(darkMode) {
           {errorMessage}
         </Alert>
       )}
-
+  
       {token && (
         <>
-          {/* Logout Button */}
-          <Link to="/profile">
-            <button className="btn btn-pale-orange">My Profile</button>
-          </Link>
-          <button onClick={handleLogout}>Logout</button>
-
-          {/* Search Bar and Filters */}
-          <div className="container my-4">
+          <div className="container">
             <div className="row">
-              <div className="col-md-3">
-                <input
-                  type="text"
-                  placeholder='Filter by title'
-                  className="form-control"
-                  name="title"
-                  value={filters.title}
-                  onChange={handleFilterChange}
-                />
+              {/* Logout and Profile Buttons */}
+              <div className="col-md-2 login-container mb-3">
+                <Link to="/profile" className="login-link">
+                  <button className="btn-spotify-style" onClick={() => console.log('Button clicked!')}>
+                    Profile
+                  </button>
+                </Link>
+                <Link to="/" className="login-link">
+                  <button className="btn-spotify-style" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </Link>
               </div>
-
-              <div className="col-md-3">
-                <input
-                  type="text"
-                  placeholder='Filter by company'
-                  className="form-control"
-                  name="company"
-                  value={filters.company}
-                  onChange={handleFilterChange}
-                />
-              </div>
-
-              <div className="col-md-2">
-                <input
-                  type="text"
-                  placeholder='Filter by localization'
-                  className="form-control"
-                  name="localization"
-                  value={filters.localization}
-                  onChange={handleFilterChange}
-                />
-              </div>
-
-              <div className="col-md-2">
-                <input
-                  type="number"
-                  placeholder='Salary'
-                  className="form-control"
-                  name="salary"
-                  value={filters.salary}
-                  onChange={handleFilterChange}
-                />
-              </div>
-
-              <div className="col-md-2">
-                <input
-                  type="date"
-                  className="form-control"
-                  name="date"
-                  value={filters.date}
-                  onChange={handleFilterChange}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Job Ads Listing */}
-          <div className="container my-5">
-            <div className="row">
-              {filteredJobAds.length > 0 ? (
-                filteredJobAds.map((ad) => (
-                  <div key={ad.id} className="col-md-4 mb-4">
-                    <JobAdvertUser
-                      title={ad.job_title}
-                      companyName={ad.company.name}
-                      place={ad.location}
-                      salary={ad.salary}
-                      contractType={ad.contract_type}
-                      description={ad.description}
-                      fullDescription={ad.full_description}
-                      creationDate={new Date(ad.created_at).toLocaleDateString()}
-                      advertisementId={ad.id}
+              {/* Search Bar and Filters */}
+              <div className="col-md-8">
+                <div className="row mt-3 search-filter-container justify-content-start">
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      placeholder="Search in job description..."
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      className="form-control"
                     />
                   </div>
-                ))
-              ) : (
-                <div className="text-center">
-                  <p>No job ads match your search or filters.</p>
+  
+                  {['title', 'company', 'localization', 'salary', 'date'].map((filter, index) => (
+                    <div className={`col-md-${filter === 'date' ? '2' : '3'} mb-2`} key={index}>
+                      <input
+                        type={filter === 'salary' ? 'number' : filter === 'date' ? 'date' : 'text'}
+                        placeholder={`Filter by ${filter}`}
+                        className="form-control"
+                        name={filter}
+                        value={filters[filter]}
+                        onChange={handleFilterChange}
+                      />
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            </div>
+  
+            {/* Job Ads Listing */}
+            <div className="container my-5">
+              <div className="row">
+                {filteredJobAds.length > 0 ? (
+                  filteredJobAds.map((ad) => (
+                    <div key={ad.id} className="playlist-container">
+                      <JobAdvertUser
+                        title={ad.job_title}
+                        companyName={ad.company.name}
+                        place={ad.location}
+                        salary={ad.salary}
+                        contractType={ad.contract_type}
+                        description={ad.description}
+                        fullDescription={ad.full_description}
+                        creationDate={new Date(ad.created_at).toLocaleDateString()}
+                        advertisementId={ad.id}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center">
+                    <p>No job ads match your search or filters.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </>
       )}
     </>
   );
-}
+}  
 
 export default AppUserPage;

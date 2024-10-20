@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { instance } from './components/myaxios';
-
 import AdminDashboard from './components/admin-dashboard';
 import LoginPage from './components/login';
 import JobAdForm from './components/recruiter';
@@ -13,6 +12,8 @@ import Profile from './components/profile';
 import Wizard from './components/wizard.jsx';
 
 import './App.css';
+import'./components/layouts/Footer.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from './components/layouts/Header.jsx';
 import Footer from './components/layouts/Footer.jsx';
@@ -32,16 +33,14 @@ function AppRouter() {
     <Router>
       <div className={`App ${darkMode ? 'bg-dark text-white' : 'bg-light text-dark'}`}>
         {/* Header */}
-        <header className={`d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'} border-bottom`} style={{ width: "100%" }}>
-          <div>
-            <h1 style={{ backgroundColor: "black", color: "green", textAlign: "center", padding: "2rem 0", fontSize: "3rem", fontFamily: "Montserrat, sans-serif" }}>Jobify</h1>
+        <header className="header">
+          <div className="header-background">
+            <h1><span class="first-letter">J</span>obify</h1>
             <p>Find your next career hit!</p>
           </div>
 
-          {/* Dark/Light Switches */}
-          <div className="d-flex align-items-center">
-            {/* Dark/Light Switch */}
-            <div className="form-check form-switch me-3">
+          <div className="switch-container">
+            <div className="form-check form-switch">
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -67,19 +66,36 @@ function AppRouter() {
           <Route path="/jobadvertuser" element={<JobAdvertUser/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/wizard" element={<Wizard/>}/>
-          <Route path="/header" element={<Header/>}/>
           <Route path="/footer" element={<Footer/>}/>
         </Routes>
 
         {/* Footer */}
-        <footer className={`footer_class=d-flex justify-content-between align-items-center p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
-          <div>
-            <p>&copy; {new Date().getFullYear()} Jobify.All rights reserved.</p>
-          </div>
-          <div>
+        <footer className={`footer p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>
+          <div className="text-center">
+            <a href="/privacy-policy" className="text-decoration-none text-reset">Jobify</a>
+            <span className="mx-2">|</span>
+            <a href="/privacy-policy" className="text-decoration-none text-reset">All rights reserved</a>
+            <span className="mx-2">|</span>
             <a href="/privacy-policy" className="text-decoration-none text-reset">Privacy Policy</a>
             <span className="mx-2">|</span>
-            <a href="/terms-of-service" className="text-decoration-none text-reset">Terms of Service'</a>
+            <a href="/terms-of-service" className="text-decoration-none text-reset">Terms of Service</a>
+          </div>
+          <div className="social-media mt-3">
+            <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+              <i className="fa-brands fa-linkedin" ></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+              <i className="fa-brands fa-twitter"></i>
+            </a>
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+              <i className="fa-brands fa-facebook"></i>
+            </a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+              <i className="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.epitech.eu" target="_blank" rel="noopener noreferrer" className="social-icon">
+              <i className="fa-solid fa-share-nodes"></i>
+            </a>
           </div>
         </footer>
       </div>

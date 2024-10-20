@@ -240,25 +240,27 @@ const Modify = (darkMode) => {
           {alertMessage}
         </Alert>
       )}
-      <h1 style={{ padding: "2rem 0", textAlign: "center", textTransform: "uppercase", letterSpacing: "5px" }}>Admin Dashboard</h1>
-      <div className="table-buttons" style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-        <Button className="mt-3 btn btn-warning" onClick={handleLogout} style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-          Logout
-        </Button>
-        <Link to="/"> 
-          <button className="btn btn-pale-orange"> Home </button> 
+      <div className="col-md-2 login-container mb-3">
+        <Link to="/" className="login-link">
+          <button className="btn-spotify-style" onClick={handleLogout}>Logout</button>
+        </Link>
+        <Link to="/" className="login-link"> 
+          <button className="btn-spotify-style"> Home </button> 
         </Link> 
-        <Link to="/recruiter"> 
-          <button className="btn btn-pale-orange"> Recruiter </button> 
+        <Link to="/recruiter" className="login-link"> 
+          <button className="btn-spotify-style"> Recruiter </button> 
         </Link> 
-        <Link to="/profile"> 
-          <button className="btn btn-pale-orange"> Profile </button> 
-        </Link> 
+        <Link to="/profile"className="login-link">
+          <button className="btn-spotify-style"> Profile </button> 
+        </Link>
+      </div>
+      <h2 style={{ padding: "2rem 0", textAlign: "center", textTransform: "uppercase", letterSpacing: "5px" }}>Admin Dashboard</h2>
+      <div className="table-buttons" style={{ display: 'flex', justifyContent: 'space-evenly' }}> 
         {tables.map(t => (
           <Button
             key={t.value}
             onClick={() => handleTableSelect(t.value)}
-            className={table === t.value ? 'btn btn-secondary' : 'btn btn-warning '}
+            className={table === t.value ? 'btn-spotify-style' : 'btn-spotify-style'}
           >
             {t.name}
           </Button>
@@ -289,8 +291,8 @@ const Modify = (darkMode) => {
                     <td key={i}>{record[field]}</td>
                   ))}
                   <td>
-                    <Button className="btn btn-warning me-3 mb-3" style={{ backgroundColor: '#ff6700' }} onClick={() => handleUpdate(record.id)}>Update</Button>
-                    <Button className="btn btn-warning me-3 mb-3" style={{ backgroundColor: 'red', color: 'white', fontWeight: "900" }} onClick={() => handleDelete(record.id)}>Delete</Button>
+                    <Button className="btn-spotify-style"  onClick={() => handleUpdate(record.id)}>Update</Button>
+                    <Button className="btn-spotify-style"  onClick={() => handleDelete(record.id)}>Delete</Button>
                   </td>
                 </tr>
               ))}
