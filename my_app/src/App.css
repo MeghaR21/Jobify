@@ -140,7 +140,7 @@ main {
   padding-right: 10px;
   padding: 35px;
   height: auto;
-  width: auto;
+  width: 35%;
   margin: flex-start;
   justify-content: flex;
 }
@@ -161,7 +161,7 @@ main {
 
 .btn-spotify-style {
   padding: 8px 16px;
-  background-color: #1DB954; /* Spotify green */
+  background-color: #1DB954 !important;
   color: white;
   border: none;
   border-radius: 25px;
@@ -175,7 +175,7 @@ main {
 }
 
 .btn-home {
-  background-color: #1DB954; /* Spotify green */
+  background-color: black !important; 
   border: none; /* Remove border */
   color: white; /* White text color */
   padding: 23px 20px; /* Padding for button */
@@ -196,6 +196,19 @@ main {
 
 .btn.spotify:hover {
   background-color: #1AA34A; /* Darker green on hover */
+}
+
+.btn-spotify-dark {
+  background-color: #282828;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+}
+
+.btn-spotify-dark:hover {
+  background-color: #3b3b3b;
 }
 
 .link-button {
@@ -270,6 +283,27 @@ input.form-control::placeholder {
 /* General form-control for alignment */
 .form-control {
   margin-bottom: 15px;
+}
+
+/* Table Styles */
+.table th, .table td {
+  color: #b3b3b3;
+  border-top: 1px solid #333;
+}
+
+.table thead th {
+  border-bottom: 2px solid #b3b3b3;
+}
+
+.table {
+  background-color: #121212;
+}
+
+/* Pagination */
+.pagination-controls button {
+  background-color: #1DB954;
+  color: white;
+  border-radius: 50px;
 }
 
 .alert {

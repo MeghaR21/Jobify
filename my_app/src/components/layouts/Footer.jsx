@@ -1,6 +1,5 @@
 import React from 'react';
 import '../../App.css';
-import './Footer.css';
 
 const Footer = ({ darkMode }) => {
     <footer className={`footer p-3 ${darkMode ? 'bg-dark' : 'bg-light'}`}>

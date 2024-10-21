@@ -255,7 +255,7 @@ const Modify = (darkMode) => {
         </Link>
       </div>
       <h2 style={{ padding: "2rem 0", textAlign: "center", textTransform: "uppercase", letterSpacing: "5px" }}>Admin Dashboard</h2>
-      <div className="table-buttons" style={{ display: 'flex', justifyContent: 'space-evenly' }}> 
+      <div className="btn-spotify-dark" style={{ display: 'flex', justifyContent: 'space-evenly' }}> 
         {tables.map(t => (
           <Button
             key={t.value}
@@ -272,7 +272,7 @@ const Modify = (darkMode) => {
           <h2 style={{ borderTop: "2px solid lightgray", margin: "4rem 0 1rem 0 " }}>
             {table.charAt(0).toUpperCase() + table.slice(1)}
           </h2>
-          <Button className="btn btn-warning mb-3" onClick={handleCreate}>
+          <Button variant="dark" className="btn-spotify-dark" onClick={handleCreate}>
             Create New {table.slice(0, -1)} {/* Singular table name */}
           </Button>
           <table className="table">
@@ -291,8 +291,8 @@ const Modify = (darkMode) => {
                     <td key={i}>{record[field]}</td>
                   ))}
                   <td>
-                    <Button className="btn-spotify-style"  onClick={() => handleUpdate(record.id)}>Update</Button>
-                    <Button className="btn-spotify-style"  onClick={() => handleDelete(record.id)}>Delete</Button>
+                    <Button type="button" className="btn-home"  onClick={() => handleUpdate(record.id)}>Update</Button>
+                    <Button type="button" className="btn-home"  onClick={() => handleDelete(record.id)}>Delete</Button>
                   </td>
                 </tr>
               ))}
