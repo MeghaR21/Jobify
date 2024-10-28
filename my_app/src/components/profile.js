@@ -154,7 +154,7 @@ function Profile({ language }) {
 
           <div className="col-md-2 login-container mb-3">
             <Button variant="spotify" type="submit" className="mt-4" style={{backgroundColor: '#1DB954'}}>
-              Login
+              Update
             </Button>
             <Button variant="spotify" type="button" className="mt-4" onClick={handleDeleteAccount} style={{backgroundColor: '#1DB954'}}>
               Delete

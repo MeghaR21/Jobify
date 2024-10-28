@@ -247,9 +247,6 @@ const Modify = (darkMode) => {
         <Link to="/" className="login-link"> 
           <button className="btn-spotify-style"> Home </button> 
         </Link> 
-        <Link to="/recruiter" className="login-link"> 
-          <button className="btn-spotify-style"> Recruiter </button> 
-        </Link> 
         <Link to="/profile"className="login-link">
           <button className="btn-spotify-style"> Profile </button> 
         </Link>
