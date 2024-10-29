@@ -12,11 +12,7 @@ import Profile from './components/profile';
 import Wizard from './components/wizard.jsx';
 
 import './App.css';
-import'./components/layouts/Footer.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from './components/layouts/Header.jsx';
-import Footer from './components/layouts/Footer.jsx';
 
 
 function AppRouter() {
@@ -66,7 +62,6 @@ function AppRouter() {
           <Route path="/jobadvertuser" element={<JobAdvertUser/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/wizard" element={<Wizard/>}/>
-          <Route path="/footer" element={<Footer/>}/>
         </Routes>
 
         {/* Footer */}
